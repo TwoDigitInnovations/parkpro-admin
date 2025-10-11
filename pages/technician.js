@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
+import isAuth from '@/components/isAuth'
 import { LuUserRound } from "react-icons/lu";
 import { LuMailSearch } from "react-icons/lu";
 import { LuCalendarSearch } from "react-icons/lu";
@@ -6,37 +7,37 @@ import { FiSearch } from "react-icons/fi";
 import { LuListRestart } from "react-icons/lu";
 import Table, { indexID } from '@/components/table';
 import { LuEye } from "react-icons/lu";
-import isAuth from "@/components/isAuth";
 import { Api } from '@/services/service';
 import { useRouter } from "next/router";
+import { userContext } from './_app';
 import moment from 'moment';
 
-function Users(props) {
+function Technician(props) {
     const router = useRouter();
-    const [allUserList, setAllUserList] = useState([]);
+    const [technicianData, setTechnicianData] = useState([]);
+    const [user, setUser] = useContext(userContext)
     const [serchData, setSearchData] = useState({
         name: '',
         email: '',
     })
     const [selectedDate, setSelectedDate] = useState('');
-    console.log(selectedDate)
 
     useEffect(() => {
-        getAllUser();
+        getAllTechnician();
     }, []);
 
-    const getAllUser = async () => {
+    const getAllTechnician = async () => {
         props.loader(true);
         const data = {}
 
         if (selectedDate) {
             data.curDate = new Date(selectedDate)
         }
-        Api("get", `auth/getAllUser?key=${serchData.name}&&email=${serchData.email}&&date=${data?.curDate || ''}`, '', router).then(
+        Api("get", `auth/getAllTechnician?key=${serchData.name}&&email=${serchData.email}&&date=${data?.curDate || ''}`, "", router).then(
             (res) => {
                 props.loader(false);
                 // console.log("res================> form data :: ", res);
-                setAllUserList(res.data);
+                setTechnicianData(res.data);
             },
             (err) => {
                 props.loader(false);
@@ -47,25 +48,13 @@ function Users(props) {
     };
 
     const handleReset = () => {
-        console.log('xf  c c ds')
         setSearchData({
             name: '',
             email: '',
         });
         setSelectedDate('');
-        setTimeout(() => {
-            getAllUser();
-        }, 1000);
-
+        getAllTechnician();
     };
-
-    function userId({ value }) {
-        return (
-            <div>
-                <p className='text-black text-base font-normal text-center'>{value}</p>
-            </div>
-        )
-    }
 
     function name({ value }) {
         return (
@@ -91,6 +80,7 @@ function Users(props) {
         )
     }
 
+
     function date({ row, value }) {
         // console.log(row?.original)
         return (
@@ -100,25 +90,9 @@ function Users(props) {
         )
     }
 
-    function address({ value }) {
-        return (
-            <div>
-                <p className='text-black text-base font-normal text-center'>{value}</p>
-            </div>
-        )
-    }
-
-    function vehicles({ value }) {
-        return (
-            <div>
-                <p className='text-black text-base font-normal text-center'>{value}</p>
-            </div>
-        )
-    }
-
     function view({ value }) {
         return (
-            <div className='flex justify-center items-center w-full'>
+            <div className='flex justify-center items-center'>
                 <div className="bg-[#00000080] w-[60px] h-[42px] rounded-[10px] flex justify-center items-center">
                     <LuEye className="w-[24px] h-[24px] text-black " />
                 </div>
@@ -128,11 +102,6 @@ function Users(props) {
 
     const columns = useMemo(
         () => [
-            // {
-            //     Header: "User ID",
-            //     // accessor: "_id",
-            //     Cell: userId,
-            // },
             {
                 Header: "Name",
                 accessor: 'name',
@@ -153,27 +122,21 @@ function Users(props) {
                 accessor: 'createdAt',
                 Cell: date
             },
-            // {
-            //     Header: "Address",
-            //     // accessor: 'phone',
-            //     Cell: address
-            // },
-            // {
-            //     Header: "Vehicles",
-            //     // accessor: 'phone',
-            //     Cell: vehicles
-            // },
-            // {
-            //     Header: "View",
-            //     // accessor: 'date',
-            //     Cell: view
-            // },
+            {
+                Header: "View",
+                // accessor: 'date',
+                Cell: view
+            },
         ],
         []
     );
 
     return (
         <div className="flex flex-col min-h-screen bg-white">
+
+            <div className='flex justify-end items-end pb-5'>
+                <button className='bg-black md:w-[160px] w-full h-[42px] rounded-[6px] flex justify-center items-center text-white font-normal text-base' onClick={() => { router.push(`/type/tech`) }}>Add Technician</button>
+            </div>
 
             <div className='bg-white border border-[#00000050] rounded-[10px] boxShadow p-5'>
                 <div className='grid md:grid-cols-5 grid-cols-1 w-full gap-5'>
@@ -195,12 +158,12 @@ function Users(props) {
 
                     <div className='w-full'>
                         <p className='text-black text-sm font-normal pl-5 pb-1'>Email</p>
-                        <div className='flex justify-start items-center md:w-[206px] full h-[42px] border border-[#1E1E1E55] rounded-[30px]'>
+                        <div className='flex justify-start items-center md:w-[206px] w-full h-[42px] border border-[#1E1E1E55] rounded-[30px]'>
                             <LuMailSearch className='w-[16px] h-[16px] text-[var(--custom-newBlack)] ml-5' />
                             <input
                                 type="text"
                                 placeholder="Search by email"
-                                className="bg-white text-[var(--custom-newBlack)] font-normal text-xs px-2 outline-0"
+                                className="bg-white text-[var(--custom-newBlack)]font-normal text-xs px-2 outline-0"
                                 value={serchData.email}
                                 onChange={((e) => {
                                     setSearchData({ ...serchData, email: e.target.value })
@@ -211,7 +174,7 @@ function Users(props) {
 
                     <div className='w-full'>
                         <p className='text-black text-sm font-normal pl-5 pb-1'>Date</p>
-                        <div className='flex justify-start items-center md:w-[206px] full h-[42px] border border-[#1E1E1E55] rounded-[30px]'>
+                        <div className='flex justify-start items-center md:w-[206px] w-full h-[42px] border border-[#1E1E1E55] rounded-[30px]'>
                             <LuCalendarSearch className='w-[18px] h-[18px] text-[var(--custom-newBlack)] ml-5' />
                             <input
                                 type="date"
@@ -224,11 +187,12 @@ function Users(props) {
                     </div>
 
                     <div className='w-full md:col-span-2 flex md:justify-end justify-start items-center gap-5'>
-                        <div className='bg-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2' onClick={getAllUser}>
+                        <div className='bg-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2' onClick={getAllTechnician}>
                             <button className='text-white font-normal text-base'>Search</button>
                             <FiSearch className='w-5 h-5 text-white' />
                         </div>
-                        <div className='border border-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2' onClick={handleReset}>
+                        <div className='border border-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2'
+                            onClick={handleReset}>
                             <button className='text-black font-normal text-base'>Reset</button>
                             <LuListRestart className='w-5 h-5 text-black' />
                         </div>
@@ -237,11 +201,11 @@ function Users(props) {
             </div>
 
             <div className="">
-                <Table columns={columns} data={allUserList} />
+                <Table columns={columns} data={technicianData} />
             </div>
 
         </div>
     )
 }
 
-export default isAuth(Users)
+export default isAuth(Technician)

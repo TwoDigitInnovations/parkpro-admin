@@ -13,8 +13,8 @@ const isAuth = (Component) => {
         if (user) {
             const u = JSON.parse(user)
             const token = localStorage.getItem("token");
-            if (router?.pathname === '/' || router?.pathname === '/reports' || router?.pathname === '/users' || router?.pathname === '/officers' || router?.pathname === '/notifications') {
-                auth = token && (u?.name === 'parkpro') ? true : false
+            if (router?.pathname === '/' || router?.pathname === '/reports' || router?.pathname === '/users' || router?.pathname === '/officers' || router?.pathname === '/notifications' || router?.pathname === '/technician') {
+                auth = token && (u?.role === 'admin' || u?.role === 'org') ? true : false
             }
             // else {
             //     auth = token && u?.type === 'ADMIN' ? true : false

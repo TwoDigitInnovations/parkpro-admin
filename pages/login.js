@@ -23,7 +23,7 @@ export default function Login(props) {
       Api("post", "auth/login", { ...userDetail, email: userDetail.username }, router).then(
         (res) => {
           props.loader(false)
-          console.log("res================>", res);
+          // console.log("res================>", res);
           if (res?.status) {
             localStorage.setItem("userDetail", JSON.stringify(res.data.user));
             setUser(res.data);

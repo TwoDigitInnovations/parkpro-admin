@@ -16,7 +16,7 @@ function Notifications(props) {
         Api("get", "notification/getNotification", "", router).then(
             (res) => {
                 props.loader(false);
-                console.log("res================> form data :: ", res);
+                // console.log("res================> form data :: ", res);
                 setNotificationData(res.data);
             },
             (err) => {

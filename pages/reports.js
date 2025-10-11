@@ -41,16 +41,27 @@ function Reports(props) {
         }
     ]
 
+    const [serchData, setSearchData] = useState({
+        issue_type: '',
+        status: '',
+    })
+    const [selectedDate, setSelectedDate] = useState('');
+
     useEffect(() => {
         getReport();
     }, []);
 
     const getReport = async () => {
         props.loader(true);
-        Api("get", "report/getReport", "", router).then(
+        const data = {}
+
+        if (selectedDate) {
+            data.curDate = new Date(selectedDate)
+        }
+        Api("get", `report/getReport?key=${serchData.issue_type}&&status=${serchData.status}&&date=${data?.curDate || ''}`, "", router).then(
             (res) => {
                 props.loader(false);
-                console.log("res================> form data :: ", res);
+                // console.log("res================> form data :: ", res);
                 setReportData(res.data);
             },
             (err) => {
@@ -59,6 +70,15 @@ function Reports(props) {
                 props.toaster({ type: "error", message: err?.message });
             }
         );
+    };
+
+    const handleReset = () => {
+        setSearchData({
+            issue_type: '',
+            status: '',
+        });
+        setSelectedDate('');
+        getReport();
     };
 
     const handleClose = () => {
@@ -73,7 +93,7 @@ function Reports(props) {
         Api("post", 'report/updateVerifyandSuspendStatus', { id, status }, router).then(
             (res) => {
                 props.loader(false);
-                console.log("res================>", res);
+                // console.log("res================>", res);
                 setviewPopup(false);
                 getReport();
             },
@@ -151,7 +171,7 @@ function Reports(props) {
     }
 
     function view({ value, row }) {
-        console.log(row.original)
+        // console.log(row.original)
         return (
             <div className="bg-[#00000080] w-[60px] h-[42px] rounded-[10px] flex justify-center items-center" onClick={() => {
                 setviewPopup(true);
@@ -202,7 +222,7 @@ function Reports(props) {
             },
             {
                 Header: "Date & Time",
-                // accessor: 'createdAt',
+                accessor: 'createdAt',
                 Cell: dateAndTime
             },
             {
@@ -227,11 +247,15 @@ function Reports(props) {
                                 type="text"
                                 placeholder="Search by type"
                                 className="bg-white text-[var(--custom-newBlack)] font-normal text-xs px-2 outline-0"
+                                value={serchData.issue_type}
+                                onChange={((e) => {
+                                    setSearchData({ ...serchData, issue_type: e.target.value })
+                                })}
                             />
                         </div>
                     </div>
 
-                    <div className='w-full'>
+                    {/* <div className='w-full'>
                         <p className='text-black text-sm font-normal pl-5 pb-1'>Status</p>
                         <div className='flex justify-start items-center md:w-[206px] w-full h-[42px] border border-[#1E1E1E55] rounded-[30px]'>
                             <LuMailSearch className='w-[16px] h-[16px] text-[var(--custom-newBlack)] ml-5' />
@@ -241,26 +265,46 @@ function Reports(props) {
                                 className="bg-white text-[var(--custom-newBlack)] font-normal text-xs px-2 outline-0"
                             />
                         </div>
+                    </div> */}
+
+                    <div className='w-full'>
+                        <p className='text-black text-sm font-normal pl-5 pb-1'>Status</p>
+                        <div className='relative px-3 w-full bg-transparent border border-[#1E1E1E55] rounded-[30px]'>
+                            <LuMailSearch className='w-[16px] h-[16px] text-[var(--custom-newBlack)]  absolute md:top-[13px] top-[10px] left-5' />
+                            <select className='bg-transparent w-full md:h-[42px] h-[40px] pl-8 pr-5  outline-none text-[var(--custom-newBlack)]  font-normal text-xs' placeholder='Select by status'
+                                value={serchData.status}
+                                onChange={(newValue) => {
+                                    setSearchData({ ...serchData, status: newValue.target.value })
+                                }}
+                            >
+                                <option value='' className='p-5'>Select by status</option>
+                                <option value='Pending' className='p-5'>Pending</option>
+                                <option value='Verified' className='p-5'>Verified</option>
+                                <option value='Suspended' className='p-5'>Suspended</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div className='w-full'>
                         <p className='text-black text-sm font-normal pl-5 pb-1'>Date</p>
                         <div className='flex justify-start items-center md:w-[206px] w-full h-[42px] border border-[#1E1E1E55] rounded-[30px]'>
-                            <LuCalendarSearch className='w-[16px] h-[16px] text-[var(--custom-newBlack)] ml-5' />
+                            <LuCalendarSearch className='w-[18px] h-[18px] text-[var(--custom-newBlack)] ml-5' />
                             <input
-                                type="text"
+                                type="date"
                                 placeholder="Search by date"
-                                className="bg-white text-[var(--custom-newBlack)] font-normal text-xs px-2 outline-0"
+                                className="bg-transparent text-[var(--custom-newBlack)] font-normal text-xs px-2 outline-0 w-full"
+                                value={selectedDate}
+                                onChange={(e) => setSelectedDate(e.target.value)}
                             />
                         </div>
                     </div>
 
                     <div className='w-full md:col-span-2 flex md:justify-end justify-start items-center gap-5'>
-                        <div className='bg-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2'>
+                        <div className='bg-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2' onClick={getReport}>
                             <button className='text-white font-normal text-base'>Search</button>
                             <FiSearch className='w-5 h-5 text-white' />
                         </div>
-                        <div className='border border-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2'>
+                        <div className='border border-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2' onClick={handleReset}>
                             <button className='text-black font-normal text-base'>Reset</button>
                             <LuListRestart className='w-5 h-5 text-black' />
                         </div>

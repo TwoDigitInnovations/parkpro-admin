@@ -31,7 +31,7 @@ export default function App({ Component, pageProps }) {
 
   const getUserDetail = async () => {
     const user = localStorage.getItem("userDetail");
-    console.log("drfdtftfyfgyhftgytgfygf", user);
+    // console.log("drfdtftfyfgyhftgytgfygf", user);
     if (user) {
       setUser(JSON.parse(user));
       // if (JSON.parse(user)?.id === "6450e9bef4d2cc08c2ec0431") {

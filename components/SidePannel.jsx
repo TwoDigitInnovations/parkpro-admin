@@ -18,25 +18,31 @@ export default function Sidebar({ open, setOpen }) {
             href: "/reports",
             title: "Reports",
             img: <FiFileText className='text-xl' />,
-            access: ["ADMIN", "SELLER"],
+            access: ["admin", "org"],
         },
         {
             href: "/users",
-            title: "Users",
+            title: "Customers",
             img: <FaRegCircleUser className='text-xl' />,
-            access: ["ADMIN", "SELLER"],
+            access: ["admin", "org"],
         },
         {
             href: "/officers",
-            title: "Officers",
+            title: "Staff",
             img: <FiShield className='text-xl' />,
-            access: ["ADMIN", "SELLER"],
+            access: ["admin", "org"],
+        },
+        {
+            href: "/technician",
+            title: "Technician",
+            img: <FaRegCircleUser className='text-xl' />,
+            access: ["admin", "org"],
         },
         {
             href: "/notifications",
             title: "Notifications",
             img: <FiBell className='text-xl' />,
-            access: ["ADMIN", "SELLER"],
+            access: ["admin", "org"],
         },
     ];
 

@@ -18,7 +18,10 @@ export default function Header() {
 
   return (
     <div className="flex-1 flex items-center justify-between md:space-x-4">
-      < p className="text-black text-[22px] font-semibold capitalize  md:mx-0 mx-5">{router.pathname === '/' ? 'Dashboard' : router.pathname.replace('/', '')}</p>
+      {router.query.type !== 'guard' && router.query.type !== 'tech' && < p className="text-black text-[22px] font-semibold capitalize  md:mx-0 mx-5">{router.pathname === '/' ? 'Dashboard' : router.pathname.replace('/', '')}</p>}
+      {router.query.type === 'guard' && < p className="text-black text-[22px] font-semibold capitalize  md:mx-0 mx-5"> Add Staff</p>}
+      {router.query.type === 'tech' && < p className="text-black text-[22px] font-semibold capitalize  md:mx-0 mx-5">Add Technician</p>}
+
       {/* <div className="flex md:justify-start items-center md:w-[379px] w-full h-[41px] border border-[#00000050] rounded-[12px] px-5">
         <FiSearch className='w-[18px] h-[18px] text-[#00000080] mr-2' />
         <input
