@@ -29,7 +29,7 @@ export const ParkingModal = ({ open, mode, form, setForm, onClose, onSubmit }) =
 
             autocomplete.current = new window.google.maps.places.Autocomplete(autoRef.current, {
                 types: ["geocode"],
-                componentRestrictions: { country: "in" },
+                // componentRestrictions: { country: "in" },
             });
 
             autocomplete.current.addListener("place_changed", () => {
