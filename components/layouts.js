@@ -16,8 +16,8 @@ const Layout = ({ children, loader, toaster }) => {
       </div>}
 
       <div className="flex-1 flex flex-col">
-        {!(router.pathname.includes('/login')) && <div className="sticky top-5 mr-5 md:ml-0 ml-5 z-40 bg-white border border-[#00000050] rounded-[16px] boxShadow">
-          <div className="flex items-center justify-between p-5 md:p-6">
+        {!(router.pathname.includes('/login')) && <div className="sticky top-5 mr-3 md:mr-5 md:ml-0 ml-3 z-40 bg-white border border-[#00000050] rounded-[16px] boxShadow">
+          <div className="flex items-center justify-between p-3 md:p-6">
             <button
               className="lg:hidden text-2xl"
               onClick={() => setOpen(true)}
@@ -28,8 +28,8 @@ const Layout = ({ children, loader, toaster }) => {
           </div>
         </div>}
 
-        <main className={`flex-1 ${router.pathname === '/login' ? ' mt-0 mr-0 md:ml-0 ml-0 md:mb-0 mb-0' : ' mt-10 mr-5 md:ml-0 ml-5 md:mb-0 mb-5'}`}>{children}</main>
-        {/* mt-10 mr-5 md:ml-0 ml-5 md:mb-0 mb-5 */}
+        <main className={`flex-1 ${router.pathname === '/login' ? 'mt-0 mr-0 md:ml-0 ml-0 md:mb-0 mb-0' : ' mt-10 md:mr-5 mr-3 md:ml-0 ml-3 md:mb-0 mb-5'}`}>{children}</main>
+  
       </div>
     </div>
   );

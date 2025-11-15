@@ -28,15 +28,21 @@ function Officers(props) {
 
     const getAllGuard = async () => {
         props.loader(true);
-        const data = {}
 
-        if (selectedDate) {
-            data.curDate = new Date(selectedDate)
-        }
-        Api("get", `auth/getAllGuard?key=${serchData.name}&&email=${serchData.email}&&date=${data?.curDate || ''}`, "", router).then(
+        const params = new URLSearchParams();
+
+        if (serchData.name) params.append("key", serchData.name);
+        if (serchData.email) params.append("email", serchData.email);
+        if (selectedDate) params.append("date", new Date(selectedDate).toISOString());
+
+        Api(
+            "get",
+            `auth/getAllGuard?${params.toString()}`,
+            "",
+            router
+        ).then(
             (res) => {
                 props.loader(false);
-                // console.log("res================> form data :: ", res);
                 setGuardData(res.data);
             },
             (err) => {
@@ -46,6 +52,7 @@ function Officers(props) {
             }
         );
     };
+
 
     const handleReset = () => {
         setSearchData({
@@ -219,7 +226,7 @@ function Officers(props) {
                             <input
                                 type="text"
                                 placeholder="Search by email"
-                                className="bg-white text-[var(--custom-newBlack)]font-normal text-xs px-2 outline-0"
+                                className="bg-white text-[var(--custom-newBlack)] font-normal text-xs px-2 outline-0"
                                 value={serchData.email}
                                 onChange={((e) => {
                                     setSearchData({ ...serchData, email: e.target.value })

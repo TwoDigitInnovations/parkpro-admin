@@ -28,15 +28,21 @@ function Technician(props) {
 
     const getAllTechnician = async () => {
         props.loader(true);
-        const data = {}
 
-        if (selectedDate) {
-            data.curDate = new Date(selectedDate)
-        }
-        Api("get", `auth/getAllTechnician?key=${serchData.name}&&email=${serchData.email}&&date=${data?.curDate || ''}`, "", router).then(
+        const params = new URLSearchParams();
+
+        if (serchData.name) params.append("key", serchData.name);
+        if (serchData.email) params.append("email", serchData.email);
+        if (selectedDate) params.append("date", new Date(selectedDate).toISOString());
+
+        Api(
+            "get",
+            `auth/getAllTechnician?${params.toString()}`,
+            "",
+            router
+        ).then(
             (res) => {
                 props.loader(false);
-                // console.log("res================> form data :: ", res);
                 setTechnicianData(res.data);
             },
             (err) => {
@@ -163,7 +169,7 @@ function Technician(props) {
                             <input
                                 type="text"
                                 placeholder="Search by email"
-                                className="bg-white text-[var(--custom-newBlack)]font-normal text-xs px-2 outline-0"
+                                className="bg-white text-[var(--custom-newBlack)] font-normal text-xs px-2 outline-0"
                                 value={serchData.email}
                                 onChange={((e) => {
                                     setSearchData({ ...serchData, email: e.target.value })

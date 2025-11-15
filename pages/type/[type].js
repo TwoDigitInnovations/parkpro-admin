@@ -22,14 +22,15 @@ function Type(props) {
             phone: addStaffAndTechnicianData?.phone,
             password: addStaffAndTechnicianData?.password,
             role: router?.query?.type,
-            organization: user?.user?.id
+            organization: user?.id
         }
 
-        props.loader(true);
+        // props.loader(true);
+        console.log(data);
+        
         Api("post", 'auth/register', data, router).then(
             (res) => {
                 props.loader(false);
-                // console.log("res================>", res);
                 if (res.status) {
                     setAddStaffAndTechnicianData({
                         name: "",

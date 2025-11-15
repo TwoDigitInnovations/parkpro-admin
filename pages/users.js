@@ -174,7 +174,6 @@ function Users(props) {
 
     return (
         <div className="flex flex-col min-h-screen bg-white">
-
             <div className='bg-white border border-[#00000050] rounded-[10px] boxShadow p-5'>
                 <div className='grid md:grid-cols-5 grid-cols-1 w-full gap-5'>
                     <div className='w-full'>

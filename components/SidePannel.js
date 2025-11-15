@@ -3,6 +3,7 @@ import { MdDashboard } from 'react-icons/md'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaRegCircleUser } from "react-icons/fa6";
+import { ParkingMeter } from "lucide-react";
 
 export default function Sidebar({ open, setOpen }) {
     const router = useRouter();
@@ -42,6 +43,12 @@ export default function Sidebar({ open, setOpen }) {
             href: "/notifications",
             title: "Notifications",
             img: <FiBell className='text-xl' />,
+            access: ["admin", "org"],
+        },
+         {
+            href: "/parking",
+            title: "Parking Area",
+            img: <ParkingMeter className='text-xl' />,
             access: ["admin", "org"],
         },
     ];
