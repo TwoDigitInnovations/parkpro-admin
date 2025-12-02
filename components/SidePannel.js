@@ -1,5 +1,5 @@
 import { FiFileText, FiShield, FiBell, FiX } from "react-icons/fi";
-import { MdDashboard } from 'react-icons/md'
+import { MdContentCopy, MdDashboard } from 'react-icons/md'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaRegCircleUser } from "react-icons/fa6";
@@ -51,6 +51,13 @@ export default function Sidebar({ open, setOpen }) {
             img: <ParkingMeter className='text-xl' />,
             access: ["admin", "org"],
         },
+        {
+            href: "/ContentManagement",
+            title: "Content Management",
+            img: <MdContentCopy className='text-xl' />,
+            access: ["admin", "org"],
+        },
+        
     ];
 
     return (
