@@ -31,8 +31,8 @@ function Notifications(props) {
         <div className="flex flex-col min-h-screen bg-white">
             <div className='bg-white border border-[#00000050] rounded-[16px] boxShadow md:p-5 p-2 flex flex-col md:gap-5 gap-3'>
                 {notificationData.map((item, i) => (<div key={i} className='bg-white border border-[#00000025] rounded-[16px] boxShadow md:p-5 p-3'>
-                    <p className='text-black text-lg font-semibold pb-2'>{item?.notification_title}</p>
-                    <p className='text-black text-base font-normal italic'>{item?.notification_description}</p>
+                    <p className='text-black text-lg font-semibold pb-2'>{item?.title}</p>
+                    <p className='text-black text-base font-normal italic'>{item?.description}</p>
                 </div>))}
 
                 {/* <div className='bg-white border border-[#00000025] rounded-[16px] boxShadow p-5'>

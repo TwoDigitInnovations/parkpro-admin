@@ -50,36 +50,52 @@ function Reports(props) {
     useEffect(() => {
         getReport();
     }, []);
+const handleSearch = () => {
+  getReport({
+    issue_type: serchData.issue_type,
+    status: serchData.status,
+    date: selectedDate ? new Date(selectedDate).toISOString() : "",
+  });
+};
 
-    const getReport = async () => {
-        props.loader(true);
-        const data = {}
+const getReport = async (filters = {}) => {
+  props.loader(true);
 
-        if (selectedDate) {
-            data.curDate = new Date(selectedDate)
-        }
-        Api("get", `report/getReport?key=${serchData.issue_type}&&status=${serchData.status}&&date=${data?.curDate || ''}`, "", router).then(
-            (res) => {
-                props.loader(false);
-                // console.log("res================> form data :: ", res);
-                setReportData(res.data);
-            },
-            (err) => {
-                props.loader(false);
-                console.log(err);
-                props.toaster({ type: "error", message: err?.message });
-            }
-        );
-    };
+  const issueType = filters.issue_type || "";
+  const status = filters.status || "";
+  const date = filters.date || "";
 
-    const handleReset = () => {
-        setSearchData({
-            issue_type: '',
-            status: '',
-        });
-        setSelectedDate('');
-        getReport();
-    };
+  Api(
+    "get",
+    `report/getReport?key=${issueType}&status=${status}&date=${date}`,
+    "",
+    router
+  ).then(
+    (res) => {
+      props.loader(false);
+      setReportData(res.data);
+    },
+    (err) => {
+      props.loader(false);
+      props.toaster({ type: "error", message: err?.message });
+    }
+  );
+};
+
+const handleReset = () => {
+  setSearchData({
+    issue_type: "",
+    status: "",
+  });
+  setSelectedDate("");
+
+  getReport({
+    issue_type: "",
+    status: "",
+    date: "",
+  });
+};
+
 
     const handleClose = () => {
         setviewPopup(false);
@@ -300,7 +316,7 @@ function Reports(props) {
                     </div>
 
                     <div className='w-full md:col-span-2 flex md:justify-end justify-start items-center gap-5'>
-                        <div className='bg-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2' onClick={getReport}>
+                        <div className='bg-black md:w-[103px] w-full h-[42px] rounded-[6px] flex justify-center items-center gap-2' onClick={handleSearch}>
                             <button className='text-white font-normal text-base'>Search</button>
                             <FiSearch className='w-5 h-5 text-white' />
                         </div>
