@@ -29,22 +29,24 @@ export default function App({ Component, pageProps }) {
     getUserDetail();
   }, []);
 
-  const getUserDetail = async () => {
-    const user = localStorage.getItem("userDetail");
-    // console.log("drfdtftfyfgyhftgytgfygf", user);
-    if (user) {
-      setUser(JSON.parse(user));
-      // if (JSON.parse(user)?.id === "6450e9bef4d2cc08c2ec0431") {
-      //   router.push("/festaevent");
-      // } else {
-      // router.push("/");
-      // }
-    } else {
-      if (router.route !== "/login" && router.route !== "/signup") {
-        router.push("/login");
-      }
+const getUserDetail = async () => {
+  const user = localStorage.getItem("userDetail");
+
+  const publicPages = [
+    "/login",
+    "/privacyPolicy",
+    "/termsAndConditions"
+  ];
+
+  if (user) {
+    setUser(JSON.parse(user));
+  } else {
+    if (!publicPages.includes(router.route)) {
+      router.push("/login");
     }
-  };
+  }
+};
+
 
   return (
     // <Component {...pageProps} />
