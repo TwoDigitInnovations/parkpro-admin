@@ -57,8 +57,8 @@ function ContentManagement(props) {
       title: "Are you sure?",
       text: confirmText,
       showCancelButton: true,
-      confirmButtonColor: "#127300",
-      cancelButtonColor: "#127300",
+      confirmButtonColor: "#000000",
+      cancelButtonColor: "#000000",
       confirmButtonText: "Yes, update it!",
     }).then((result) => {
       if (result.isConfirmed) {
@@ -159,7 +159,7 @@ function ContentManagement(props) {
   );
 }
 
-const PolicySection = ({ title, value, onChange, onSubmit, isLast }) => {
+const PolicySection = ({ title, value, onBlur, onSubmit, isLast }) => {
   return (
     <div className={`mb-${isLast ? "20" : "8"}`}>
       <div className="bg-white rounded-xl shadow-md">
@@ -174,7 +174,7 @@ const PolicySection = ({ title, value, onChange, onSubmit, isLast }) => {
           <div className="border rounded-lg overflow-hidden">
             <JoditEditor
               value={value}
-              onChange={onChange}
+              onBlur={onBlur}
               config={{
                 height: 400,
                 toolbarAdaptive: false,
