@@ -431,11 +431,11 @@ function Parking(props) {
                         {/* Slots Section */}
                         <div className="mt-6">
                             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
-                                <h4 className="font-medium">Slots</h4>
+                                <h4 className="font-medium">lots</h4>
 
                                 <div className="flex flex-wrap items-center gap-2">
                                     <input
-                                        placeholder="Slot no"
+                                        placeholder="lot no"
                                         value={slotForm.slotNo}
                                         onChange={(e) => setSlotForm({ ...slotForm, slotNo: e.target.value })}
                                         className="border px-2 py-1 rounded w-32"
@@ -454,7 +454,7 @@ function Parking(props) {
                                         onClick={handleAddSlot}
                                         className="px-3 py-2 cursor-pointer bg-black text-white rounded text-sm"
                                     >
-                                        Add Slot
+                                        Add lot
                                     </button>
                                 </div>
                             </div>
@@ -467,7 +467,7 @@ function Parking(props) {
                                             className="flex justify-between items-center border rounded px-3 py-2"
                                         >
                                             <div>
-                                                <div className="font-medium">Slot No:{s.slotNo}</div>
+                                                <div className="font-medium">lot No:{s.slotNo}</div>
                                                 {/* <div className="text-xs text-gray-500">
                                                     {s.forWheel ? "4-wheeler" : "2-wheeler"}
                                                 </div> */}
@@ -482,7 +482,7 @@ function Parking(props) {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="text-sm text-gray-500">No slots yet.</div>
+                                    <div className="text-sm text-gray-500">No lots yet.</div>
                                 )}
                             </div>
                         </div>
