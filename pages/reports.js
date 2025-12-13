@@ -211,11 +211,7 @@ const handleReset = () => {
                 accessor: 'issue_type',
                 Cell: type
             },
-            {
-                Header: "License Plate No",
-                accessor: 'license_plate_no',
-                Cell: licensePlateNo
-            },
+          
             {
                 Header: "Address",
                 accessor: 'address',

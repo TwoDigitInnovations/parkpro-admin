@@ -143,11 +143,11 @@ function Users(props) {
                 accessor: 'email',
                 Cell: email
             },
-            {
-                Header: "Phone",
-                accessor: 'phone',
-                Cell: phone
-            },
+            // {
+            //     Header: "Phone",
+            //     accessor: 'phone',
+            //     Cell: phone
+            // },
             {
                 Header: "Date ",
                 accessor: 'createdAt',

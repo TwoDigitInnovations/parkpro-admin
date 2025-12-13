@@ -284,7 +284,7 @@ function Officers(props) {
               <div>
                 <p className="text-sm text-gray-500">Created By</p>
                 <p className="font-medium text-gray-800">
-                  {selectedData.createdAt}
+                  {moment(selectedData.createdAt).format("DD-MM-YYYY")}
                 </p>
               </div>
             </div>

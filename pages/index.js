@@ -1,293 +1,251 @@
-// import { FiBell, FiUser, FiEye } from "react-icons/fi";
-// import Image from "next/image";
-import { useMemo, useState } from "react";
-import Table from "@/components/table";
-import { LuEye } from "react-icons/lu";
+import { useEffect, useMemo, useState } from "react";
 import isAuth from "@/components/isAuth";
+import { Api } from "@/services/service";
+import { useRouter } from "next/router";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { UserX } from "lucide-react";
 
-function Home() {
-  const [productsList, setProductsList] = useState([]);
+function Home(props) {
+  const [topOfficers, setTopOfficers] = useState([]);
+  const [Dashboard, setDashboard] = useState({});
+  const [reports, setReports] = useState([]);
 
-  function reportId({ value }) {
-    return (
-      <div>
-        <p className='text-black text-base font-normal text-center'>{value}</p>
-      </div>
-    )
-  }
+  const router = useRouter();
+  useEffect(() => {
+    getDashBoardDetails();
+    last7DaysReports();
+    getTopOfficer();
+  }, []);
 
-  function type({ value }) {
-    return (
-      <div>
-        <p className='text-black text-base font-normal text-center'>{value}</p>
-      </div>
-    )
-  }
+  const formatWeeklyBookings = (data) => {
+    return data.map((item) => ({
+      date: item._id, // X-axis
+      total: item.total, // Y-axis
+    }));
+  };
 
-  function reportedBy({ value }) {
-    return (
-      <div>
-        <p className='text-black text-base font-normal text-center'>{value}</p>
-      </div>
-    )
-  }
-
-  function officerAssigned({ value }) {
-    return (
-      <div>
-        <p className='text-black text-base font-normal text-center'>{value}</p>
-      </div>
-    )
-  }
-
-  function status({ value }) {
-    return (
-      <div>
-        <p className='text-black text-base font-normal text-center'>{value}</p>
-      </div>
-    )
-  }
-
-  function dateAndTime({ value }) {
-    return (
-      <div>
-        <p className='text-black text-base font-normal text-center'>{value}</p>
-      </div>
-    )
-  }
-
-  function view({ value }) {
-    return (
-      <div className="bg-[#00000080] w-[60px] h-[42px] rounded-[10px] flex justify-center items-center">
-        <LuEye className="w-[24px] h-[24px] text-black " />
-      </div>
-    )
-  }
-
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Report Id",
-        // accessor: "_id",
-        Cell: reportId,
+  const getDashBoardDetails = async () => {
+    props.loader(true);
+    let url = `admin/dashboardDetails`;
+    Api("get", url, router).then(
+      (res) => {
+        props.loader(false);
+        console.log("abcd", res?.data);
+        setDashboard(res.data);
       },
-      {
-        Header: "Type",
-        accessor: 'first_name',
-        Cell: type
-      },
-      {
-        Header: "Reported By",
-        accessor: 'phone',
-        Cell: reportedBy
-      },
-      {
-        Header: "Officer Assigned",
-        accessor: 'email',
-        Cell: officerAssigned
-      },
-      {
-        Header: "Status",
-        accessor: 'createdAt',
-        Cell: status
-      },
-      {
-        Header: "Date & Time",
-        accessor: 'date',
-        Cell: dateAndTime
-      },
-      {
-        Header: "View",
-        // accessor: 'date',
-        Cell: view
-      },
-    ],
-    []
-  );
+      (err) => {
+        props.loader(false);
+        console.log(err);
+        props.toaster({
+          type: "error",
+          message: err?.message || "Something went Wrong",
+        });
+      }
+    );
+  };
 
-  // const topOfficers = [
-  //   { name: "Paul", reports: 86, img: "/officers/paul.jpg" },
-  //   { name: "Dom", reports: 80, img: "/officers/dom.jpg" },
-  //   { name: "Landon", reports: 78, img: "/officers/landon.jpg" },
-  //   { name: "Kelly", reports: 62, img: "/officers/kelly.jpg" },
-  //   { name: "Kloe", reports: 55, img: "/officers/kloe.jpg" },
-  // ];
+  const getTopOfficer = async () => {
+    props.loader(true);
+    let url = `admin/getTopOfficer`;
+    Api("get", url, router).then(
+      (res) => {
+        props.loader(false);
+        console.log("abcd", res?.data);
+        setTopOfficers(res.data);
+      },
+      (err) => {
+        props.loader(false);
+        console.log(err);
+        props.toaster({
+          type: "error",
+          message: err?.message || "Something went Wrong",
+        });
+      }
+    );
+  };
 
-  // const reports = [
-  //   { id: "#REP1234", type: "Illegal Parking", reportedBy: "John", officer: "Paul", status: "Active", date: "23rd September, 09:45 AM" },
-  //   { id: "#REP1235", type: "Illegal Parking", reportedBy: "Dave", officer: "Kloe", status: "Active", date: "23rd September, 09:45 AM" },
-  // ];
+  const last7DaysReports = async () => {
+    props.loader(true);
+    let url = `admin/last7DaysReports`;
+    Api("get", url, router).then(
+      (res) => {
+        props.loader(false);
+        const data = formatWeeklyBookings(res.data);
+        setReports(data);
+      },
+      (err) => {
+        props.loader(false);
+        console.log(err);
+        props.toaster({
+          type: "error",
+          message: err?.message || "Something went Wrong",
+        });
+      }
+    );
+  };
 
+  const generateAvatar = (name = "") => {
+    const initials = name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+
+    return (
+      <div className="w-[38px] h-[38px] rounded-full bg-black text-white flex items-center justify-center text-sm font-semibold">
+        {initials}
+      </div>
+    );
+  };
+
+  const DashboardCard = ({ title, subtitle, subtitleColor, value }) => {
+    return (
+      <div className="bg-white w-full border border-[#00000080] rounded-[20px] boxShadow p-3">
+        <p className="text-black text-sm font-medium pb-2">{title}</p>
+
+        <div className="flex justify-between items-center gap-5">
+          <p className={`text-xs font-medium ${subtitleColor}`}>{subtitle}</p>
+
+          <p className="text-black text-[38px] font-semibold">{value ?? 0}</p>
+        </div>
+      </div>
+    );
+  };
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <div className="grid md:grid-cols-4 grid-cols-1 w-full gap-5 mb-5">
-        <div className="bg-white w-full border border-[#00000080] rounded-[20px] boxShadow p-3">
-          <p className="text-black text-sm font-medium pb-2">Total Reports Today</p>
-          <div className="flex justify-between items-center gap-5">
-            <p className="text-xs text-[var(--custom-green)] font-medium">+12% vs yesterday</p>
-            <p className="text-black text-[38px] font-semibold">248</p>
-          </div>
-        </div>
+        <DashboardCard
+          title="Total Reports Today"
+          subtitle="+12% vs yesterday"
+          subtitleColor="text-[var(--custom-green)]"
+          value={Dashboard?.totalReports}
+        />
 
-        <div className="bg-white w-full border border-[#00000080] rounded-[20px] boxShadow p-3">
-          <p className="text-black text-sm font-medium pb-2">Closed Reports</p>
-          <div className="flex justify-between items-center gap-5">
-            <p className="text-xs text-[var(--custom-green)] font-medium">77% resolution rate</p>
-            <p className="text-black text-[38px] font-semibold">192</p>
-          </div>
-        </div>
+        <DashboardCard
+          title="Closed Reports"
+          subtitle="77% resolution rate"
+          subtitleColor="text-[var(--custom-green)]"
+          value={Dashboard?.closedReports}
+        />
 
-        <div className="bg-white w-full border border-[#00000080] rounded-[20px] boxShadow p-3">
-          <p className="text-black text-sm font-medium pb-2">Active Officers</p>
-          <div className="flex justify-between items-center gap-5">
-            <p className="text-xs text-[var(--custom-lightBlue)] font-medium">Online now</p>
-            <p className="text-black text-[38px] font-semibold">36</p>
-          </div>
-        </div>
+        <DashboardCard
+          title="Active Officers"
+          subtitle="Online now"
+          subtitleColor="text-[var(--custom-lightBlue)]"
+          value={Dashboard?.activeStaff}
+        />
 
-        <div className="bg-white w-full border border-[#00000080] rounded-[20px] boxShadow p-3">
-          <p className="text-black text-sm font-medium pb-2">Average Response Time</p>
-          <div className="flex justify-between items-center gap-5">
-            <p className="text-xs text-[var(--custom-lightBlue)] font-medium">Faster than last week</p>
-            <p className="text-black text-[38px] font-semibold">14<span className="text-black text-[8px] font-semibold">mins</span></p>
-          </div>
-        </div>
+        <DashboardCard
+          title="Active Technician"
+          subtitle="Online now"
+          subtitleColor="text-[var(--custom-lightBlue)]"
+          value={Dashboard?.activeTechnician}
+        />
       </div>
 
       <div className="grid md:grid-cols-2 grid-cols-1 w-full gap-5">
-        <img className="w-full" src="/chartImg.png" />
+        {/* <img className="w-full" src="/chartImg.png" /> */}
+        <div className="bg-white p-4  border border-[#00000080] rounded-[12px] boxShadow">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Reports This Week
+          </h3>
+
+          <div className="h-[450px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={reports} barSize={40}>
+                <CartesianGrid stroke="#000" strokeDasharray="3 3" />
+
+                <XAxis
+                  dataKey="date"
+                  tick={{ fill: "#000", fontSize: 12 }}
+                  axisLine={{ stroke: "#000" }}
+                  tickLine={{ stroke: "#000" }}
+                />
+
+                <YAxis
+                  tick={{ fill: "#000", fontSize: 12 }}
+                  axisLine={{ stroke: "#000" }}
+                  tickLine={{ stroke: "#000" }}
+                />
+
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "#fff",
+                    borderRadius: "8px",
+                    border: "1px solid #000",
+                    color: "#000",
+                  }}
+                  cursor={{ fill: "rgba(0,0,0,0.08)" }}
+                />
+
+                <Bar
+                  dataKey="total"
+                  fill="#000" // ✅ BLACK BAR
+                  radius={[10, 10, 0, 0]}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
         <div className="bg-white w-full border border-[#00000080] rounded-[12px] boxShadow p-5">
-          <p className="text-black text-sm font-semibold pb-3">Top Officers</p>
+          <p className="text-black text-lg font-semibold pb-3">Top Officers</p>
 
           <div className="flex flex-col gap-3 w-full">
-            <div className="bg-white w-full border border-[#0000004D] rounded-[8px] boxShadow p-3 flex justify-between items-center gap-5">
-              <div className="flex justify-start items-center gap-5">
-                <img className="w-[38px] h-[38px] rounded-full" src="/image.png" />
-                <p className="text-black text-sm font-medium">Paul</p>
-              </div>
-              <div className="flex justify-start items-center gap-2">
-                <p className="text-black text-[10px] font-medium">Reports Handled:</p>
-                <p className="text-black text-lg font-medium">86</p>
-              </div>
-            </div>
-
-            <div className="bg-white w-full border border-[#0000004D] rounded-[8px] boxShadow p-3 flex justify-between items-center gap-5">
-              <div className="flex justify-start items-center gap-5">
-                <img className="w-[38px] h-[38px] rounded-full" src="/image-1.png" />
-                <p className="text-black text-sm font-medium">Dom</p>
-              </div>
-              <div className="flex justify-start items-center gap-2">
-                <p className="text-black text-[10px] font-medium">Reports Handled:</p>
-                <p className="text-black text-lg font-medium">80</p>
-              </div>
-            </div>
-
-            <div className="bg-white w-full border border-[#0000004D] rounded-[8px] boxShadow p-3 flex justify-between items-center gap-5">
-              <div className="flex justify-start items-center gap-5">
-                <img className="w-[38px] h-[38px] rounded-full" src="/image-2.png" />
-                <p className="text-black text-sm font-medium">Landon</p>
-              </div>
-              <div className="flex justify-start items-center gap-2">
-                <p className="text-black text-[10px] font-medium">Reports Handled:</p>
-                <p className="text-black text-lg font-medium">78</p>
-              </div>
-            </div>
-
-            <div className="bg-white w-full border border-[#0000004D] rounded-[8px] boxShadow p-3 flex justify-between items-center gap-5">
-              <div className="flex justify-start items-center gap-5">
-                <img className="w-[38px] h-[38px] rounded-full" src="/image-3.png" />
-                <p className="text-black text-sm font-medium">Kelly</p>
-              </div>
-              <div className="flex justify-start items-center gap-2">
-                <p className="text-black text-[10px] font-medium">Reports Handled:</p>
-                <p className="text-black text-lg font-medium">62</p>
-              </div>
-            </div>
-
-            <div className="bg-white w-full border border-[#0000004D] rounded-[8px] boxShadow p-3 flex justify-between items-center gap-5">
-              <div className="flex justify-start items-center gap-5">
-                <img className="w-[38px] h-[38px] rounded-full" src="/image-3.png" />
-                <p className="text-black text-sm font-medium">Kloe</p>
-              </div>
-              <div className="flex justify-start items-center gap-2">
-                <p className="text-black text-[10px] font-medium">Reports Handled:</p>
-                <p className="text-black text-lg font-medium">55</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="md:pb-5">
-        <Table columns={columns} data={productsList} />
-      </div>
-
-      {/* <div className="grid grid-cols-3 gap-6">
-        <div className="bg-white shadow rounded-lg p-4 col-span-2">
-          <div className="flex justify-between mb-2">
-            <h3 className="font-semibold">Reports</h3>
-            <div className="space-x-2">
-              <button className="px-3 py-1 bg-black text-white rounded">Last 7 Days</button>
-              <button className="px-3 py-1 bg-gray-200 rounded">Last 30 Days</button>
-            </div>
-          </div>
-          <div className="h-56 flex items-center justify-center text-gray-400">
-            [Chart Goes Here]
-          </div>
-        </div>
-
-        <div className="bg-white shadow rounded-lg p-4">
-          <h3 className="font-semibold mb-4">Top Officers</h3>
-          <ul className="space-y-3">
-            {topOfficers.map((o, i) => (
-              <li key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <Image src={o.img} alt={o.name} width={32} height={32} className="rounded-full" />
-                  <span>{o.name}</span>
+            {topOfficers?.map((officer, index) => (
+              <div
+                key={index}
+                className="bg-white w-full border border-[#0000004D] rounded-[8px] boxShadow p-3 flex justify-between items-center gap-5 hover:shadow-md transition"
+              >
+                {/* Left */}
+                <div className="flex items-center gap-4">
+                  {generateAvatar(officer.name)}
+                  <p className="text-black text-sm font-medium">
+                    {officer.name}
+                  </p>
                 </div>
-                <span className="text-sm">Reports: {o.reports}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div> */}
 
-      {/* <div className="bg-white shadow rounded-lg p-4 mt-6">
-        <h3 className="font-semibold mb-4">Latest Reports</h3>
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b">
-              <th className="py-2">Report Id</th>
-              <th>Type</th>
-              <th>Reported By</th>
-              <th>Officer Assigned</th>
-              <th>Status</th>
-              <th>Date & Time</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {reports.map((r, i) => (
-              <tr key={i} className="border-b">
-                <td className="py-2">{r.id}</td>
-                <td>{r.type}</td>
-                <td>{r.reportedBy}</td>
-                <td>{r.officer}</td>
-                <td>{r.status}</td>
-                <td>{r.date}</td>
-                <td>
-                  <button className="p-2 rounded hover:bg-gray-200">
-                    <FiEye />
-                  </button>
-                </td>
-              </tr>
+                {/* Right */}
+                <div className="flex items-center gap-2">
+                  <p className="text-black text-[10px] font-medium">
+                    Reports Handled:
+                  </p>
+                  <p className="text-black text-lg font-semibold">
+                    {officer.totalResolved}
+                  </p>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div> */}
+          </div>
+
+          {topOfficers.length === 0 && (
+            <div className="flex flex-col items-center justify-center min-h-[350px] gap-3">
+              <div className="w-12 h-12 rounded-full border border-black flex items-center justify-center">
+                <UserX className="text-black" size={24} />
+              </div>
+
+              <p className="text-black text-sm font-medium">
+                No top officers yet
+              </p>
+
+              <p className="text-gray-500 text-xs text-center">
+                  Once reports are resolved, officers will appear here.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-export default isAuth(Home)
+export default isAuth(Home);
