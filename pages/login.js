@@ -24,9 +24,9 @@ export default function Login(props) {
         (res) => {
           props.loader(false)
           // console.log("res================>", res);
-          if (res?.status) {
+          if (res?.status&&(res?.data?.user?.role==='admin'||res?.data?.user?.role==='superadmin')) {
             localStorage.setItem("userDetail", JSON.stringify(res.data.user));
-            setUser(res.data);
+            setUser(res.data?.user);
             setUserDetail({
               username: "",
               password: "",
@@ -74,6 +74,9 @@ export default function Login(props) {
             // } else {
             //   props.toaster({ type: "error", message: "You are not an Admin" });
             // }
+          } else {
+              props.toaster({ type: "error", message: "You are not authorized" });
+
           }
         },
         (err) => {

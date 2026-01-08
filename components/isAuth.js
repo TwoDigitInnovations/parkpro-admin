@@ -24,7 +24,20 @@ const isAuth = (Component) => {
       const token = localStorage.getItem("token");
 
       if (
-        router.pathname === "/" ||
+        router.pathname === "/" 
+      ) {
+        auth =
+          token && (u?.role === "superadmin"||u?.role === "admin" )
+            ? true
+            : false;
+      } else if (
+        router.pathname === "/organization" 
+      ) {
+        auth =
+          token && (u?.role === "superadmin" )
+            ? true
+            : false;
+      } else if (
         router.pathname === "/reports" ||
         router.pathname === "/users" ||
         router.pathname === "/officers" ||
@@ -33,7 +46,7 @@ const isAuth = (Component) => {
         router.pathname === "/parking"
       ) {
         auth =
-          token && (u?.role === "admin" || u?.role === "org")
+          token && (u?.role === "admin")
             ? true
             : false;
       } else {

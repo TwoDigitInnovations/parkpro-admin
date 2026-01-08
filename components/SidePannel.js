@@ -4,58 +4,67 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaRegCircleUser } from "react-icons/fa6";
 import { ParkingMeter } from "lucide-react";
+import { useContext } from "react";
+import { userContext } from "@/pages/_app";
 
 export default function Sidebar({ open, setOpen }) {
     const router = useRouter();
+    const [user] = useContext(userContext);
 
     const menuItems = [
         {
             href: "/",
             title: "Dashboard",
             img: <MdDashboard className='text-xl' />,
-            access: ["ADMIN", "SELLER"],
+            access: ["superadmin","admin"],
+        },
+        {
+            href: "/organization",
+            title: "Organization",
+            img: <FaRegCircleUser className='text-xl' />,
+            access: ["superadmin"],
         },
         {
             href: "/reports",
             title: "Reports",
             img: <FiFileText className='text-xl' />,
-            access: ["admin", "org"],
+            access: ["admin",],
         },
         {
             href: "/users",
             title: "Customers",
             img: <FaRegCircleUser className='text-xl' />,
-            access: ["admin", "org"],
+            access: ["admin", ],
         },
         {
             href: "/officers",
             title: "Staff",
             img: <FiShield className='text-xl' />,
-            access: ["admin", "org"],
+            access: ["admin", ],
         },
         {
             href: "/technician",
             title: "Technician",
             img: <FaRegCircleUser className='text-xl' />,
-            access: ["admin", "org"],
+            access: ["admin",],
         },
         {
             href: "/notifications",
             title: "Notifications",
             img: <FiBell className='text-xl' />,
-            access: ["admin", "org"],
+            access: ["admin", ],
         },
          {
             href: "/parking",
             title: "Parking Area",
             img: <ParkingMeter className='text-xl' />,
-            access: ["admin", "org"],
+            access: ["admin",],
         },
         {
             href: "/ContentManagement",
             title: "Content Management",
             img: <MdContentCopy className='text-xl' />,
-            access: ["admin", "org"],
+            access: ["superadmin",],
         },
         
     ];
@@ -78,7 +87,9 @@ export default function Sidebar({ open, setOpen }) {
                     <nav className="flex-1 overflow-y-auto md:block hidden">
                         <ul className="space-y-2 p-5">
                             {menuItems.map((item, i) => (
-                                <Link key={i} href={item.href} className={`flex items-center group hover:bg-black hover:text-white hover:rounded-[8px]  cursor-pointer ${router.pathname === item.href ? 'bg-black text-white rounded-[8px]' : 'text-black'}`}>
+                                <Link key={i} href={item.href} className={`${
+                  item?.access?.includes(user?.role) ? "flex" : "hidden"
+                } items-center group hover:bg-black hover:text-white hover:rounded-[8px]  cursor-pointer ${router.pathname === item.href ? 'bg-black text-white rounded-[8px]' : 'text-black'}`}>
                                     <div className='py-2 pl-6 font-medium flex items-center gap-4 w-full'>
                                         <div className='w-6'>{item?.img}</div>
                                         {item?.title}
@@ -104,7 +115,9 @@ export default function Sidebar({ open, setOpen }) {
                     <nav className="flex-1 overflow-y-auto ">
                         <ul className="space-y-2 p-5">
                             {menuItems.map((item, i) => (
-                                <Link key={i} href={item.href} onClick={() => setOpen(false)} className={`flex items-center group hover:bg-black hover:text-white hover:rounded-[8px]  cursor-pointer ${router.pathname === item.href ? 'bg-black text-white rounded-[8px]' : 'text-black'}`}>
+                                <Link key={i} href={item.href} onClick={() => setOpen(false)} className={`${
+                  item?.access?.includes(user?.role) ? "flex" : "hidden"
+                } items-center group hover:bg-black hover:text-white hover:rounded-[8px]  cursor-pointer ${router.pathname === item.href ? 'bg-black text-white rounded-[8px]' : 'text-black'}`}>
                                     <div className='py-2 pl-6 font-medium flex items-center gap-4 w-full'>
                                         <div className='w-6'>{item?.img}</div>
                                         {item?.title}
