@@ -128,6 +128,11 @@ function Organization(props) {
         Cell: name,
       },
       {
+        Header: "Code",
+        accessor: "code",
+        Cell: name,
+      },
+      {
         Header: "Email",
         accessor: "email",
         Cell: email,
