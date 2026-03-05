@@ -17,29 +17,10 @@ export default function Header() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-between md:space-x-4">
-      {router.query.type !== 'guard' && router.query.type !== 'tech' && < p className="text-black text-[22px] font-semibold capitalize  md:mx-0 mx-5">{router.pathname === '/' ? 'Dashboard' : router.pathname.replace('/', '')}</p>}
-      {router.query.type === 'guard' && < p className="text-black text-[22px] font-semibold capitalize  md:mx-0 mx-5"> Add Staff</p>}
-      {router.query.type === 'tech' && < p className="text-black text-[22px] font-semibold capitalize  md:mx-0 mx-5">Add Technician</p>}
-
-      {/* <div className="flex md:justify-start items-center md:w-[379px] w-full h-[41px] border border-[#00000050] rounded-[12px] px-5">
-        <FiSearch className='w-[18px] h-[18px] text-[#00000080] mr-2' />
-        <input
-          type="text"
-          placeholder="Search"
-          className="outline-0 text-[#00000080] text-sm font-normal"
-        />
-      </div> */}
+    <div className="flex-1 flex items-center justify-between md:space-x-4 md:bg-black h-10 ">
+    
       <div className="md:flex justify-center items-center gap-5 hidden">
-        {/* <div className="bg-[#00000011] w-[48px] h-[48px] rounded-full flex justify-center items-center cursor-pointer">
-          <FiBell className="text-xl md:text-2xl cursor-pointer" />
-        </div> */}
-        <div className="bg-[#00000011] w-[48px] h-[48px] rounded-full flex justify-center items-center cursor-pointer">
-          <FiUser className="text-xl md:text-2xl cursor-pointer" />
-        </div>
-        <div className="bg-[#00000011] w-[48px] h-[48px] rounded-full flex justify-center items-center cursor-pointer" onClick={logOut}>
-          <PiSignOutFill className="text-xl md:text-2xl cursor-pointer" />
-        </div>
+      
       </div>
     </div >
   );

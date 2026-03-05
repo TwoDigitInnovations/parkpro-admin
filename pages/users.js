@@ -47,7 +47,7 @@ function Users(props) {
     };
 
     const handleReset = () => {
-        console.log('xf  c c ds')
+   
         setSearchData({
             name: '',
             email: '',

@@ -121,7 +121,7 @@ function Home(props) {
     );
   };
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white p-4">
       <div className="grid md:grid-cols-4 grid-cols-1 w-full gap-5 mb-5">
         <DashboardCard
           title="Total Reports Today"

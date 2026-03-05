@@ -42,7 +42,7 @@ const getUserDetail = async () => {
     setUser(JSON.parse(user));
   } else {
     if (!publicPages.includes(router.route)) {
-      router.push("/login");
+      // router.push("/login");
     }
   }
 };

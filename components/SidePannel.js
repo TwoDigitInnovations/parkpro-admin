@@ -1,132 +1,259 @@
-import { FiFileText, FiShield, FiBell, FiX } from "react-icons/fi";
-import { MdContentCopy, MdDashboard } from 'react-icons/md'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
+import { FiX, FiLogOut } from "react-icons/fi";
+import { MdDashboard, MdOutlineMeetingRoom } from "react-icons/md";
 import { FaRegCircleUser } from "react-icons/fa6";
-import { ParkingMeter } from "lucide-react";
-import { useContext } from "react";
+import { ParkingMeter, User2, UserPlusIcon } from "lucide-react";
 import { userContext } from "@/pages/_app";
+import { ChevronRight } from "lucide-react";
+import { FiFileText, FiShield, FiBell } from "react-icons/fi";
+import { PiUserList } from "react-icons/pi";
+import Swal from "sweetalert2";
 
-export default function Sidebar({ open, setOpen }) {
-    const router = useRouter();
-    const [user] = useContext(userContext);
+function SidePannel({ open, setOpen }) {
+  const router = useRouter();
+  const [user, setUser] = useContext(userContext);
 
-    const menuItems = [
-        {
-            href: "/",
-            title: "Dashboard",
-            img: <MdDashboard className='text-xl' />,
-            access: ["superadmin","admin"],
-        },
-        {
-            href: "/organization",
-            title: "Organization",
-            img: <FaRegCircleUser className='text-xl' />,
-            access: ["superadmin"],
-        },
-        {
-            href: "/reports",
-            title: "Reports",
-            img: <FiFileText className='text-xl' />,
-            access: ["admin",],
-        },
-        {
-            href: "/users",
-            title: "Customers",
-            img: <FaRegCircleUser className='text-xl' />,
-            access: ["admin", ],
-        },
-        {
-            href: "/officers",
-            title: "Staff",
-            img: <FiShield className='text-xl' />,
-            access: ["admin", ],
-        },
-        {
-            href: "/technician",
-            title: "Technician",
-            img: <FaRegCircleUser className='text-xl' />,
-            access: ["admin",],
-        },
-        {
-            href: "/notifications",
-            title: "Notifications",
-            img: <FiBell className='text-xl' />,
-            access: ["admin", ],
-        },
-         {
-            href: "/parking",
-            title: "Parking Area",
-            img: <ParkingMeter className='text-xl' />,
-            access: ["admin",],
-        },
-        {
-            href: "/ContentManagement",
-            title: "Content Management",
-            img: <MdContentCopy className='text-xl' />,
-            access: ["superadmin",],
-        },
-        
-    ];
+  const managementMenu = [
+    {
+      href: "/organization",
+      title: "Organization",
+      icon: <FaRegCircleUser size={20} />,
+      access: ["superadmin"],
+    },
 
-    return (
-        <>
-            {open && (<div className="fixed inset-0  bg-opacity-40 z-40 lg:hidden" onClick={() => setOpen(false)} />)}
+    {
+      href: "/Building",
+      title: "Add Buildings",
+      icon: <ParkingMeter size={20} />,
+      access: ["admin", "landlord_admin"],
+    },
 
-            <div className="md:block hidden h-full">
-                <aside className={`fixed lg:static top-0 left-0 h-full w-64 border border-[#00000050] rounded-[18px] boxShadow flex flex-col z-50 transform transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-                    <div className="px-5 flex justify-between items-center">
-                        <div className="flex justify-center items-center w-full">
-                            <img className="w-[170px] h-[170px]" src="/logo.png" />
-                        </div>
-                        <button className="lg:hidden text-2xl" onClick={() => setOpen(false)}>
-                            <FiX />
-                        </button>
-                    </div>
+    // {
+    //   href: "/users",
+    //   title: "Users",
+    //   icon: <FaRegCircleUser size={20} />,
+    //   access: ["admin", "landlord_admin"],
+    // },
 
-                    <nav className="flex-1 overflow-y-auto md:block hidden">
-                        <ul className="space-y-2 p-5">
-                            {menuItems.map((item, i) => (
-                                <Link key={i} href={item.href} className={`${
-                  item?.access?.includes(user?.role) ? "flex" : "hidden"
-                } items-center group hover:bg-black hover:text-white hover:rounded-[8px]  cursor-pointer ${router.pathname === item.href ? 'bg-black text-white rounded-[8px]' : 'text-black'}`}>
-                                    <div className='py-2 pl-6 font-medium flex items-center gap-4 w-full'>
-                                        <div className='w-6'>{item?.img}</div>
-                                        {item?.title}
-                                    </div>
-                                </Link>))}
-                        </ul>
-                    </nav>
-                </aside>
+    // Admin Only
+    {
+      href: "/reports",
+      title: "Reports",
+      icon: <FiFileText size={20} />,
+      access: ["admin", "landlord"], // landlord ko bhi reports allowed
+    },
+
+    {
+      href: "/officers",
+      title: "Staff",
+      icon: <FiShield size={20} />,
+      access: ["admin"],
+    },
+
+    {
+      href: "/technician",
+      title: "Technician",
+      icon: <FaRegCircleUser size={20} />,
+      access: ["admin"],
+    },
+
+    {
+      href: "/notifications",
+      title: "Notifications",
+      icon: <FiBell size={20} />,
+      access: ["admin"],
+    },
+
+    {
+      href: "/parking",
+      title: "Parking Area",
+      icon: <ParkingMeter size={20} />,
+      access: ["admin"],
+    },
+
+    {
+      href: "/parkinglots",
+      title: "Parking Lots",
+      icon: <ParkingMeter size={20} />,
+      access: ["landlord_admin"],
+    },
+    {
+      href: "/Rentals",
+      title: "Rentals",
+      icon: <UserPlusIcon size={20} />,
+      access: ["landlord_admin"],
+    },
+  ];
+
+
+const logOut = () => {
+  Swal.fire({
+    title: "Logout",
+    text: "Are you sure you want to logout?",
+    showCancelButton: true,
+    confirmButtonText: "Logout",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#ff2d2d",
+    cancelButtonColor: "#1f2937",
+    reverseButtons: true,
+    customClass: {
+      popup: "rounded-2xl",
+      title: "text-xl font-semibold",
+      confirmButton: "px-6 py-2",
+      cancelButton: "px-6 py-2"
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      setUser({});
+      localStorage.removeItem("userDetail");
+      localStorage.removeItem("token");
+      router.push("/login");
+    }
+  });
+};
+
+
+  return (
+    <>
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed top-0 left-0 h-full w-72 bg-[#000000]
+ text-white z-50 flex flex-col transition-transform duration-300
+        ${open ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+      >
+        <div className="flex items-center justify-between px-6 py-5">
+          <img
+            className="w-[140px] sm:w-[160px] "
+            src="/logo1.png"
+            alt="Logo"
+          />
+          <button
+            className="lg:hidden text-xl ps-4"
+            onClick={() => setOpen(false)}
+          >
+            <FiX />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-4">
+          <Link
+            href="/AddBuilding"
+            className="flex items-center justify-between px-4 py-3 rounded-xl bg-white text-black mb-2"
+          >
+            <div className="flex items-center gap-3">
+              <MdDashboard size={20} />
+              <span className="font-medium">Dashboard</span>
             </div>
+            <ChevronRight size={18} />
+          </Link>
+          <p className="text-gray-400 text-xs mt-6 mb-3 px-2 tracking-wider">
+            MANAGEMENT
+          </p>
 
-            <div className="md:hidden block">
-                <aside className={`fixed lg:static top-0 left-0 h-full w-64 bg-white  boxShadow flex flex-col z-50 transform transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-                    {/* border border-[#00000050] rounded-[16px] */}
-                    <div className="px-5 pt-5 flex justify-between items-start">
-                        <div className="flex justify-center items-center w-full">
-                            <img className="w-[170px] h-[170px]" src="/logo.png" />
-                        </div>
-                        <button className="lg:hidden text-2xl" onClick={() => setOpen(false)}>
-                            <FiX />
-                        </button>
-                    </div>
+          {managementMenu.map((item, i) =>
+            item.access.includes(user?.role) ? (
+              <Link
+                key={i}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className={`flex items-center justify-between px-4 py-3 rounded-xl mb-2 transition-all
+                ${
+                  router.pathname === item.href
+                    ? "bg-white text-black"
+                    : "text-gray-300 hover:bg-white/10"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  {item.icon}
+                  <span className="font-medium">{item.title}</span>
+                </div>
+                <ChevronRight size={18} />
+              </Link>
+            ) : null,
+          )}
+          {/* <Link
+            href="/AddBuilding"
+            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 mb-2"
+          >
+            <span>Add Buildings</span>
+            <ChevronRight size={18} />
+          </Link>
 
-                    <nav className="flex-1 overflow-y-auto ">
-                        <ul className="space-y-2 p-5">
-                            {menuItems.map((item, i) => (
-                                <Link key={i} href={item.href} onClick={() => setOpen(false)} className={`${
-                  item?.access?.includes(user?.role) ? "flex" : "hidden"
-                } items-center group hover:bg-black hover:text-white hover:rounded-[8px]  cursor-pointer ${router.pathname === item.href ? 'bg-black text-white rounded-[8px]' : 'text-black'}`}>
-                                    <div className='py-2 pl-6 font-medium flex items-center gap-4 w-full'>
-                                        <div className='w-6'>{item?.img}</div>
-                                        {item?.title}
-                                    </div>
-                                </Link>))}
-                        </ul>
-                    </nav>
-                </aside>
+          <Link
+            href="/queue"
+            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 mb-2"
+          >
+            <span>Queue</span>
+            <ChevronRight size={18} />
+          </Link>
+
+          <Link
+            href="/services"
+            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 mb-2"
+          >
+            <span>Services</span>
+            <ChevronRight size={18} />
+          </Link>
+
+          <Link
+            href="/revenue"
+            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 mb-2"
+          >
+            <span>Revenue & Payouts</span>
+            <ChevronRight size={18} />
+          </Link> */}
+
+          <p className="text-gray-400 text-xs mt-6 mb-3 px-2 tracking-wider">
+            OTHER MENU
+          </p>
+
+          <Link
+            href="/settings"
+            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10"
+          >
+            <span>Setting</span>
+            <ChevronRight size={18} />
+          </Link>
+        </div>
+
+        {/* User Card */}
+        <div className="p-4 border-t border-white/10">
+          <div className="bg-white cursor-pointer text-black rounded-xl p-3 flex items-center gap-3 mb-3">
+            {/* <img
+              src="https://i.pravatar.cc/40"
+              className="w-10 h-10 rounded-full"
+            /> */}
+            <div className="bg-black rounded-4xl w-8 h-8 flex justify-center items-center">
+              <User2 className="text-white" />
             </div>
-        </>
-    );
+            <div>
+              <p className="font-semibold text-sm">{user.name}</p>
+              <p className="text-xs text-gray-600">{user.email}</p>
+            </div>
+          </div>
+
+          <button
+            className="cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white text-black font-medium hover:opacity-90"
+            onClick={logOut}
+          >
+            <FiLogOut />
+            Logout
+          </button>
+
+         
+        </div>
+      </aside>
+    </>
+  );
 }
+export default SidePannel;

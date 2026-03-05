@@ -3,9 +3,7 @@ import { useContext, useState } from "react";
 import { Api } from "@/services/service";
 import { useRouter } from "next/router";
 import { userContext } from "./_app";
-import Swal from "sweetalert2";
-import { IoEyeOffOutline } from "react-icons/io5";
-import { IoEyeOutline } from "react-icons/io5";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 export default function Login(props) {
   const router = useRouter();
@@ -20,70 +18,35 @@ export default function Login(props) {
   const submit = async () => {
     if (userDetail.username && userDetail.password) {
       props.loader(true);
-      Api("post", "auth/login", { ...userDetail, email: userDetail.username }, router).then(
+      Api(
+        "post",
+        "auth/login",
+        { ...userDetail, email: userDetail.username },
+        router,
+      ).then(
         (res) => {
-          props.loader(false)
-          // console.log("res================>", res);
-          if (res?.status&&(res?.data?.user?.role==='admin'||res?.data?.user?.role==='superadmin')) {
+          props.loader(false);
+          if (
+            res?.status &&
+            (res?.data?.user?.role === "admin" ||
+              res?.data?.user?.role === "superadmin" ||
+              res?.data?.user?.role === "landlord_admin")
+          ) {
             localStorage.setItem("userDetail", JSON.stringify(res.data.user));
             setUser(res.data?.user);
-            setUserDetail({
-              username: "",
-              password: "",
-            });
+            setUserDetail({ username: "", password: "" });
             localStorage.setItem("token", res.data.token);
             props.toaster({ type: "success", message: "Login Successful" });
             router.push("/");
-
-            // if (res.data.type === "ADMIN" || res.data.type === "SELLER") {
-            //   localStorage.setItem("userDetail", JSON.stringify(res.data));
-            //   setUser(res.data);
-            //   setUserDetail({
-            //     username: "",
-            //     password: "",
-            //   });
-            //   localStorage.setItem("token", res.data.token);
-
-            //   if (res.data.type === "SELLER") {
-            //     console.log("res================>", res);
-            //     if (res.data.type === "SELLER" && (!res.data.store || (res.data.store && res.data.store.verification !== "Verified"))) {
-            //       Swal.fire({
-            //         text: "Your account hasn't been verified. Please wait by 2-7 working days. Thanks.",
-            //         icon: "warning",
-            //         showCancelButton: false,
-            //         confirmButtonText: "OK"
-            //       })
-            //       return
-            //     } else {
-
-            //       if (!res?.data?.subscription?.expiry_date) {
-            //         router.push("/subscriber");
-            //       } else {
-            //         if (new Date() > new Date(res?.data?.subscription?.expiry_date)) {
-            //           router.push("/subscriber");
-            //         } else {
-            //           props.toaster({ type: "success", message: "Login Successful" });
-            //           router.push("/");
-            //         }
-            //       }
-            //     }
-            //   } else {
-            //     props.toaster({ type: "success", message: "Login Successful" });
-            //     router.push("/");
-            //   }
-            // } else {
-            //   props.toaster({ type: "error", message: "You are not an Admin" });
-            // }
           } else {
-              props.toaster({ type: "error", message: "You are not authorized" });
-
+            props.toaster({ type: "error", message: "You are not authorized" });
           }
         },
         (err) => {
           props.loader(false);
           console.log(err);
           props.toaster({ type: "error", message: err?.message });
-        }
+        },
       );
     } else {
       props.toaster({ type: "error", message: "Missing credentials" });
@@ -91,70 +54,103 @@ export default function Login(props) {
   };
 
   return (
-    <div className="flex min-h-screen bg-white justify-center items-center ">
-      <div className="border-2 rounded-3xl border-custom-red bg-white md:p-10 p-5 sm:w-1.5 md:w-1/3  ">
-        <p className="text-black text-center md:text-4xl text-2xl font-semibold mb-10">
-          Welcome
-        </p>
-        <div className="flex bg-white py-2 mt-4 rounded-md border  border-black md:h-14 sm:h-10 w-64 md:min-w-full">
-          <div className="flex md:mx-4 mx-2.5 justify-center md:h-10 sm:h-8 items-center ">
-            <div className="md:w-5 md:h-5 w-4 h-4 relative">
-              <MdEmail className="text-xl text-black" />
+    <div className="min-h-screen flex flex-col justify-center  md:flex-row bg-gray-50">
+     
+      <div className="flex flex-col justify-center w-full md:w-1/2 lg:w-6/12 px-6 sm:px-10 md:px-16 lg:px-40 py-12 bg-white">
+    
+        <div className="mb-10">
+          <img
+            className="w-[140px] sm:w-[160px] "
+            src="/logo.png"
+            alt="Logo"
+          />
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+            Welcome Back
+          </h1>
+
+          <p className="text-gray-500 text-sm mt-2">
+            Sign in to access your dashboard
+          </p>
+        </div>
+
+   
+        <div className="w-full max-w-md">
+        
+          <div className="flex items-center border border-gray-300 focus-within:border-black rounded-xl px-4 py-3 transition-all bg-gray-50 mb-4">
+            <MdEmail className="text-gray-400 text-lg mr-3" />
+            <input
+              type="email"
+              placeholder="Email Address"
+              className="bg-transparent outline-none w-full text-gray-700 text-sm"
+              value={userDetail.username}
+              onChange={(e) =>
+                setUserDetail({ ...userDetail, username: e.target.value })
+              }
+            />
+          </div>
+          {submitted && userDetail.username === "" && (
+            <p className="text-red-500 text-xs mb-4">Email is required</p>
+          )}
+
+          {/* Password */}
+          <div className="flex items-center border border-gray-300 focus-within:border-black rounded-xl px-4 py-3 mb-4 transition-all bg-gray-50 relative">
+            <MdPassword className="text-gray-400 text-lg mr-3" />
+            <input
+              type={!eyeIcon ? "password" : "text"}
+              placeholder="Password"
+              className="bg-transparent outline-none w-full text-gray-700 text-sm pr-8"
+              value={userDetail.password}
+              onChange={(e) =>
+                setUserDetail({ ...userDetail, password: e.target.value })
+              }
+            />
+            <div className="absolute right-4 cursor-pointer">
+              {!eyeIcon ? (
+                <IoEyeOffOutline
+                  className="w-5 h-5 text-gray-400"
+                  onClick={() => setEyeIcon(true)}
+                />
+              ) : (
+                <IoEyeOutline
+                  className="w-5 h-5 text-gray-400"
+                  onClick={() => setEyeIcon(false)}
+                />
+              )}
             </div>
           </div>
-          <input
-            placeholder="Username"
-            className="bg-white outline-none px-2 w-full text-black text-xs md:text-base border-l-2 border-black md:h-10 h-5"
-            value={userDetail.username}
-            autoComplete="false"
-            onChange={(text) => {
-              setUserDetail({ ...userDetail, username: text.target.value });
-            }}
-          />
-        </div>
-        {submitted && userDetail.email === "" && (
-          <p className="text-red-700 mt-1">Username is required</p>
-        )}
-        <div className="flex bg-white py-2 mt-4 rounded-md  border  border-black md:h-14 sm:h-10 min-w-full relative items-center w-64 md:min-w-full ">
-          <div className="flex md:mx-4 mx-2.5  justify-center md:h-10 sm:h-8 items-center ">
-            <div className="md:w-5 md:h-5 w-4 h-4 relative">
-              <MdPassword className="text-xl text-black" />
-            </div>
-          </div>
-          <input
-            placeholder="Password"
-            type={!eyeIcon ? "password" : "text"}
-            className="bg-white outline-none px-2 w-full text-black text-xs md:text-base border-l-2 border-black md:h-10 h-5"
-            value={userDetail.password}
-            autoComplete="new-password"
-            onChange={(text) => {
-              setUserDetail({ ...userDetail, password: text.target.value });
-            }}
-          />
-          <div className='absolute md:top-[17px] top-[8px] right-[12px]'>
-            {!eyeIcon && <IoEyeOffOutline className='w-[20px] h-[20px] text-black' onClick={() => { setEyeIcon(true); }} />}
-            {eyeIcon && <IoEyeOutline className='w-[20px] h-[20px] text-black' onClick={() => { setEyeIcon(false); }} />}
-          </div>
-        </div>
-        {submitted && userDetail.password === "" && (
-          <p className="text-red-700 mt-1">Password is required</p>
-        )}
+          {submitted && userDetail.password === "" && (
+            <p className="text-red-500 text-xs mb-4">Password is required</p>
+          )}
 
-        <div className=" mt-10 grid grid-cols-2 gap-8">
-          <div className="items-start">
-            <p className="text-black text-left md:text-4xl text-2xl font-semibold ">
-              Sign in
-            </p>
-          </div>
-          <div className="flex justify-end"
-
+          {/* Button */}
+          <button
             onClick={submit}
+            className="w-full cursor-pointer bg-black text-white py-3 rounded-xl text-sm font-semibold hover:bg-gray-800 transition-all duration-300 shadow-md"
           >
-            <div className="md:w-10 md:h-10 w-8 h-8 relative bg-black rounded-full flex justify-center items-center">
-              <MdArrowForward className="text-white w-5 h-5" />
-            </div>
-          </div>
+            Sign In
+          </button>
         </div>
+      </div>
+
+      <div className="hidden md:block md:w-1/2 lg:w-6/12 relative">
+        <img
+          src="/imageparkpro.png"
+          alt="Dashboard Preview"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/40 to-white"></div>
+
+        {/* <div className="absolute bottom-12 left-12 text-black max-w-sm">
+          <h2 className="text-2xl lg:text-2xl font-semibold leading-snug">
+            Smart Access Control System
+          </h2>
+          <p className="text-sm mt-3 text-gray-700">
+            Manage roles, monitor activity, and control access — all in one
+            place.
+          </p>
+        </div> */}
       </div>
     </div>
   );

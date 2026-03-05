@@ -1,67 +1,48 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
+const roleAccess = {
+  superadmin: ["/", "/organization"],
+  admin: ["/", "/reports", "/users", "/officers", "/notifications", "/technician", "/parking"],
+  landlord_admin: ["/", "/Building", "/users","parkinglots"],
+  landlord: ["/", "/reports"],
+};
+
+const publicPages = ["/privacyPolicy", "/termsAndConditions"];
+
 const isAuth = (Component) => {
   return function IsAuth(props) {
     const router = useRouter();
+    const { pathname } = router;
 
     let auth = false;
-    let user;
-
-    const publicPages = [
-      "/privacyPolicy",
-      "/termsAndConditions",
-    ];
-
-    const isPublic = publicPages.includes(router.pathname);
 
     if (typeof window !== "undefined") {
-      user = localStorage.getItem("userDetail");
-    }
-
-    if (user) {
-      const u = JSON.parse(user);
+      const user = localStorage.getItem("userDetail");
       const token = localStorage.getItem("token");
 
-      if (
-        router.pathname === "/" 
-      ) {
-        auth =
-          token && (u?.role === "superadmin"||u?.role === "admin" )
-            ? true
-            : false;
-      } else if (
-        router.pathname === "/organization" 
-      ) {
-        auth =
-          token && (u?.role === "superadmin" )
-            ? true
-            : false;
-      } else if (
-        router.pathname === "/reports" ||
-        router.pathname === "/users" ||
-        router.pathname === "/officers" ||
-        router.pathname === "/notifications" ||
-        router.pathname === "/technician" ||
-        router.pathname === "/parking"
-      ) {
-        auth =
-          token && (u?.role === "admin")
-            ? true
-            : false;
-      } else {
-        auth = true; // Other authenticated pages allowed
+      if (user && token) {
+        const parsedUser = JSON.parse(user);
+        const role = parsedUser?.role;
+
+        if (publicPages.includes(pathname)) {
+          auth = true;
+        } else {
+          auth = roleAccess[role]?.includes(pathname);
+        }
       }
     }
 
     useEffect(() => {
-      if (!auth && !isPublic) {
-        localStorage.clear();
-        router.replace("/login");
-      } 
-    }, [auth, isPublic]);
+      if (!auth && !publicPages.includes(pathname)) {
+        // localStorage.clear();
+        // router.replace("/login");
+      }
+    }, [auth, pathname]);
 
-    return <Component {...props} />;
+    return auth || publicPages.includes(pathname) ? (
+      <Component {...props} />
+    ) : null;
   };
 };
 
