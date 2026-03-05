@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import Loader from "@/components/loader";
 import Layout from "@/components/layouts";
 import Toaster from "@/components/toaster";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/effect-fade";
 
 export const userContext = createContext();
 
@@ -29,28 +32,24 @@ export default function App({ Component, pageProps }) {
     getUserDetail();
   }, []);
 
-const getUserDetail = async () => {
-  const user = localStorage.getItem("userDetail");
+  const getUserDetail = async () => {
+    const user = localStorage.getItem("userDetail");
 
-  const publicPages = [
-    "/login",
-    "/privacyPolicy",
-    "/termsAndConditions"
-  ];
+    const publicPages = ["/login", "/privacyPolicy", "/termsAndConditions"];
 
-  if (user) {
-    setUser(JSON.parse(user));
-  } else {
-    if (!publicPages.includes(router.route)) {
-      router.push("/login");
+    if (user) {
+      setUser(JSON.parse(user));
+    } else {
+      if (!publicPages.includes(router.route)) {
+        router.push("/login");
+      }
     }
-  }
-};
-
+  };
 
   return (
     // <Component {...pageProps} />
     <>
+    
       <userContext.Provider value={[user, setUser]}>
         <Loader open={open} />
         <div className="fixed right-5 top-20 min-w-max z-50">
@@ -65,15 +64,16 @@ const getUserDetail = async () => {
               <Toaster type={toast.type} message={toast.message} />
             )}
           </div>
-          {user &&
+          {user && (
             <Component
               {...pageProps}
               loader={setOpen}
               toaster={setToast}
               user={user}
-            />}
+            />
+          )}
         </Layout>
       </userContext.Provider>
     </>
-  )
+  );
 }

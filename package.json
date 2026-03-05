@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev ",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
@@ -11,22 +11,25 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.2",
+    "@tiptap/extension-underline": "^3.20.0",
+    "@tiptap/react": "^3.20.0",
+    "@tiptap/starter-kit": "^3.20.0",
+    "autoprefixer": "^10.4.27",
     "axios": "^1.12.2",
-    "jodit-react": "^5.2.38",
+    "css-loader": "^7.1.4",
     "lucide-react": "^0.553.0",
     "moment": "^2.30.1",
     "motion": "^12.35.0",
     "next": "15.5.4",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "postcss": "^8.5.8",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
     "react-icons": "^5.5.0",
     "react-table": "^7.8.0",
     "recharts": "^3.5.1",
+    "style-loader": "^4.0.0",
     "sweetalert2": "^11.23.0",
-    "swiper": "^12.0.2"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4"
+    "swiper": "^12.0.2",
+    "tailwindcss": "^3.4.4"
   }
 }

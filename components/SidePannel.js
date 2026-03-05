@@ -24,11 +24,11 @@ function SidePannel({ open, setOpen }) {
       icon: <FaRegCircleUser size={20} />,
       access: ["superadmin"],
     },
-     {
+    {
       href: "/landlords",
       title: "Land Lords",
       icon: <UserPlusIcon size={20} />,
-      access: ["landlord_admin","landlord"],
+      access: ["landlord_admin"],
     },
 
     {
@@ -42,7 +42,7 @@ function SidePannel({ open, setOpen }) {
       href: "/users",
       title: "Users",
       icon: <FaRegCircleUser size={20} />,
-      access: ["admin", "landlord_admin","landlord"],
+      access: ["admin", "landlord_admin", "landlord"],
     },
 
     // Admin Only
@@ -50,7 +50,7 @@ function SidePannel({ open, setOpen }) {
       href: "/reports",
       title: "Reports",
       icon: <FiFileText size={20} />,
-      access: ["admin"], 
+      access: ["admin"],
     },
 
     {
@@ -93,7 +93,6 @@ function SidePannel({ open, setOpen }) {
       icon: <UserPlusIcon size={20} />,
       access: ["landlord"],
     },
-     
   ];
 
   const logOut = () => {
@@ -122,6 +121,8 @@ function SidePannel({ open, setOpen }) {
     });
   };
 
+  console.log(router.pathname);
+  
   return (
     <>
       {open && (
@@ -140,6 +141,7 @@ function SidePannel({ open, setOpen }) {
           <img
             className="w-[140px] sm:w-[160px] "
             src="/logo1.png"
+            onClick={() => router.push("/")}
             alt="Logo"
           />
           <button
@@ -186,24 +188,28 @@ function SidePannel({ open, setOpen }) {
               </Link>
             ) : null,
           )}
-        
+
           <p className="text-gray-400 text-xs mt-6 mb-3 px-2 tracking-wider">
             OTHER MENU
           </p>
 
           <Link
             href="/Settings"
-            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10"
+            className={`flex items-center justify-between px-4 py-3 rounded-xl  ${
+              router.pathname === "/Settings"
+                ? "bg-white text-black"
+                : "text-gray-300 hover:bg-white/10"
+            }`}
           >
             <span>Setting</span>
             <ChevronRight size={18} />
           </Link>
         </div>
 
- 
         <div className="p-4 border-t border-white/10">
-          <div className="bg-white cursor-pointer text-black rounded-xl p-3 flex items-center gap-3 mb-3"
-          onClick={()=> router.push("/profile")}
+          <div
+            className="bg-white cursor-pointer text-black rounded-xl p-3 flex items-center gap-3 mb-3"
+            onClick={() => router.push("/profile")}
           >
             {/* <img
               src="https://i.pravatar.cc/40"

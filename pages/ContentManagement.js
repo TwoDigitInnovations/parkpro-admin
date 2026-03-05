@@ -1,12 +1,13 @@
+"use client";
+
 import React, { useContext, useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { Api } from "@/services/service";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import moment from "moment";
 import { userContext } from "./_app";
+import TipTapEditor from "@/components/TipTapEditor";
 
-const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 function ContentManagement(props) {
   const [contentData, setContentData] = useState({
@@ -48,7 +49,7 @@ function ContentManagement(props) {
           type: "error",
           message: err?.data?.message || "An error occurred",
         });
-      }
+      },
     );
   };
 
@@ -85,7 +86,7 @@ function ContentManagement(props) {
               type: "error",
               message: err?.data?.message || "An error occurred",
             });
-          }
+          },
         );
       }
     });
@@ -172,14 +173,7 @@ const PolicySection = ({ title, value, onBlur, onSubmit, isLast }) => {
 
         <div className="p-4 md:p-6">
           <div className="border rounded-lg overflow-hidden">
-            <JoditEditor
-              value={value}
-              onBlur={onBlur}
-              config={{
-                height: 400,
-                toolbarAdaptive: false,
-              }}
-            />
+            <TipTapEditor value={value} onChange={(html) => onBlur(html)} />
           </div>
 
           <div className="mt-4 flex justify-end">
