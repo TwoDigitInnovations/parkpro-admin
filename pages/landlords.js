@@ -3,31 +3,36 @@ import Table from "@/components/table";
 import isAuth from "@/components/isAuth";
 import { Api } from "@/services/service";
 import { useRouter } from "next/router";
-import AddBuilding from "@/components/AddBuilding";
+import AddLandlords from "@/components/AddLandlords";
 import moment from "moment";
 import { Delete, DeleteIcon, Edit, Eye, Plus, Trash2 } from "lucide-react";
 import { ConfirmModal } from "@/components/deleteModel";
 
-function Building(props) {
+function Landlords(props) {
   const router = useRouter();
-  const [BuildingData, setBuildingData] = useState([]);
+  const [LandlordsData, setLandlordsData] = useState([]);
   const [popupData, setpopupData] = useState({});
-  const [openBuilding, setOpenBuilding] = useState(false);
+  const [openLandlords, setOpenLandlords] = useState(false);
   const [editId, setEditId] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    getAllBuilding();
+    getAllLandlords();
   }, []);
 
-  const getAllBuilding = async () => {
+  const getAllLandlords = async (page = 1, limit = 10) => {
     props.loader(true);
 
-    Api("get", `building/getAllBuilding`, "", router).then(
+    Api(
+      "get",
+      `auth/getAllUser?role=landlord&page=${page}&limit=${limit}`,
+      "",
+      router,
+    ).then(
       (res) => {
         props.loader(false);
-        setBuildingData(res.data);
+        setLandlordsData(res.data.data);
       },
       (err) => {
         props.loader(false);
@@ -36,7 +41,7 @@ function Building(props) {
     );
   };
 
-  const DeleteBuilding = async () => {
+  const DeleteLandlords = async () => {
     try {
       props.loader(true);
 
@@ -44,7 +49,7 @@ function Building(props) {
 
       const res = await Api(
         "delete",
-        `building/deleteBuilding/${id}`,
+        `Landlords/deleteLandlords/${id}`,
         "",
         router,
       );
@@ -53,9 +58,9 @@ function Building(props) {
 
       props.toaster({
         type: "success",
-        message: "Building deleted successfully",
+        message: "Landlords deleted successfully",
       });
-      getAllBuilding();
+      getAllLandlords();
     } catch (err) {
       props.loader(false);
 
@@ -74,7 +79,7 @@ function Building(props) {
     );
   }
 
-  function BuildingName({ value }) {
+  function Name({ value }) {
     return (
       <div>
         <p className="text-black text-base font-normal text-center">{value}</p>
@@ -90,7 +95,7 @@ function Building(props) {
     );
   }
 
-  function Contact({ value }) {
+  function Email({ value }) {
     return (
       <div>
         <p className="text-black text-base font-normal text-center">{value}</p>
@@ -138,7 +143,7 @@ function Building(props) {
           className="bg-black cursor-pointer py-2 px-4 rounded-[10px] flex justify-center items-center"
           onClick={() => {
             setEditId(row.original._id);
-            setOpenBuilding(true);
+            setOpenLandlords(true);
             setpopupData(row.original);
           }}
         >
@@ -160,29 +165,21 @@ function Building(props) {
   const columns = useMemo(
     () => [
       {
-        Header: "Building Name",
-        accessor: "building_name",
-        Cell: BuildingName,
+        Header: " Name",
+        accessor: "name",
+        Cell: Name,
       },
-      {
-        Header: "Address",
-        accessor: "address",
-        Cell: Address,
-      },
+
       {
         Header: "Phone",
-        accessor: "phone_no",
+        accessor: "phone",
         Cell: Phone,
       },
+
       {
-        Header: "Contact Name",
-        accessor: "name",
-        Cell: ContactPersonName,
-      },
-      {
-        Header: "Contact",
-        accessor: "contact_no",
-        Cell: Contact,
+        Header: "Email",
+        accessor: "email",
+        Cell: Email,
       },
       {
         Header: "Created",
@@ -202,28 +199,19 @@ function Building(props) {
     <div className="flex flex-col min-h-screen bg-white p-6  ">
       <div className="flex justify-between items-center pb-5">
         <h1 className="text-black font-bold border-b-[4px] border-[#1E1E1E] text-2xl">
-          Buildings
+          Landlords
         </h1>
         <button
           className="bg-black px-4 py-1.5 rounded-[6px] flex justify-center items-center text-white font-normal text-base gap-1 cursor-pointer"
-          onClick={() => {}}
+          onClick={() => setOpenLandlords(true)}
         >
           <Plus />
-          Import BUildings
-        </button>
-      </div>
-      <div className="flex justify-end items-end pb-5">
-        <button
-          className="bg-black px-4 py-1.5 rounded-[6px] flex justify-center items-center text-white font-normal text-base gap-1 cursor-pointer"
-          onClick={() => setOpenBuilding(true)}
-        >
-          <Plus />
-          Add Building Address
+          Add Landlords
         </button>
       </div>
 
       <div>
-        {BuildingData?.length === 0 ? (
+        {LandlordsData?.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 min-h-[550px] text-center">
             {/* Icon */}
             <div className="bg-gray-100 p-6 rounded-full mb-4">
@@ -244,26 +232,26 @@ function Building(props) {
             </div>
 
             <p className="text-lg font-semibold text-gray-700">
-              No Buildings Found
+              No Landlordss Found
             </p>
 
             <p className="text-sm text-gray-500 mt-1">
-              There are no buildings added yet.
+              There are no Landlordss added yet.
             </p>
           </div>
         ) : (
-          <Table columns={columns} data={BuildingData} />
+          <Table columns={columns} data={LandlordsData} />
         )}
       </div>
 
-      {openBuilding && (
-        <AddBuilding
-          open={openBuilding}
-          setOpenAddBuilding={setOpenBuilding}
+      {openLandlords && (
+        <AddLandlords
+          open={openLandlords}
+          setOpenAddLandlords={setOpenLandlords}
           editId={editId}
           editData={popupData}
           setpopupData={setpopupData}
-          fetchBuilding={getAllBuilding}
+          fetchLandlords={getAllLandlords}
           loader={props.loader}
           toaster={props.toaster}
         />
@@ -272,41 +260,35 @@ function Building(props) {
       <ConfirmModal
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        title="Delete Building "
-        message="Are you sure? you want to delete this building"
-        onConfirm={DeleteBuilding}
+        title="Delete Landlords "
+        message="Are you sure? you want to delete this Landlords"
+        onConfirm={DeleteLandlords}
         yesText="Delete"
         noText="Cancel"
       />
 
       {open && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 md:px-0 px-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full p-6">
-            <div className="grid md:grid-cols-2 gap-6 items-center">
-              {/* Left Image */}
+          <div className="bg-white rounded-xl shadow-xl w-md p-6">
+            <div className="flex flex-col gap-6 items-center">
               <div className="flex flex-col items-center">
-                <p className="text-sm text-gray-500 mb-2 font-medium">
-                  Uploaded Building Image
-                </p>
-
+                <p className="text-sm text-gray-500 mb-2 font-medium">Image</p>
                 <div className="relative w-full">
                   <img
-                    src={popupData?.building_image}
+                    src={popupData?.image}
                     alt="building"
                     className="w-full h-[220px] object-cover rounded-lg"
                   />
                 </div>
               </div>
 
-              <div className="text-sm text-gray-700 space-y-2 border-l md:pl-6">
+              <div className="text-sm text-gray-700 space-y-2 border-t  pt-4">
+                <p>
+                  <span className="font-medium"> Name :</span> {popupData?.name}
+                </p>
                 <p>
                   <span className="font-medium">Date :</span>{" "}
                   {moment(popupData?.created).format("DD-MM-YYYY")}
-                </p>
-
-                <p>
-                  <span className="font-medium">Building Name :</span>{" "}
-                  {popupData?.building_name}
                 </p>
 
                 <p>
@@ -316,22 +298,11 @@ function Building(props) {
 
                 <p>
                   <span className="font-medium">Phone Number :</span>{" "}
-                  {popupData?.phone_no}
+                  {popupData?.phone}
                 </p>
-
                 <p>
-                  <span className="font-medium">Parking Numbers :</span>{" "}
-                  {popupData?.parking}
-                </p>
-
-                <p>
-                  <span className="font-medium">EV Charging :</span>{" "}
-                  {popupData?.evCharging ? "Yes" : "No"}
-                </p>
-
-                <p>
-                  <span className="font-medium">Charger :</span>{" "}
-                  {popupData?.charger}
+                  <span className="font-medium">Email :</span>{" "}
+                  {popupData?.email}
                 </p>
               </div>
             </div>
@@ -351,4 +322,4 @@ function Building(props) {
   );
 }
 
-export default isAuth(Building);
+export default isAuth(Landlords);

@@ -23,7 +23,7 @@ const Layout = ({ children }) => {
 
       <div className="flex-1 flex flex-col">
         {!isPublicPage && (
-          <div className="sticky top-0 z-40 ">
+          <div className="sticky top-0 z-40 ps-4">
             <div className="flex items-center justify-between ">
               <button
                 className="lg:hidden text-2xl"

@@ -69,7 +69,7 @@ function Reports(props) {
       "get",
       `report/getReport?key=${issueType}&status=${status}&date=${date}`,
       "",
-      router
+      router,
     ).then(
       (res) => {
         props.loader(false);
@@ -78,7 +78,7 @@ function Reports(props) {
       (err) => {
         props.loader(false);
         props.toaster({ type: "error", message: err?.message });
-      }
+      },
     );
   };
 
@@ -109,7 +109,7 @@ function Reports(props) {
       "post",
       "report/updateVerifyandSuspendStatus",
       { id, status },
-      router
+      router,
     ).then(
       (res) => {
         props.loader(false);
@@ -121,7 +121,7 @@ function Reports(props) {
         props.loader(false);
         console.log(err);
         props.toaster({ type: "error", message: err?.message });
-      }
+      },
     );
   };
 
@@ -258,7 +258,7 @@ function Reports(props) {
         Cell: view,
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -467,7 +467,7 @@ function Reports(props) {
                         onClick={() => {
                           updateVerifyandSuspendStatus(
                             popupData?._id,
-                            "Verified"
+                            "Verified",
                           );
                         }}
                       >
@@ -480,7 +480,7 @@ function Reports(props) {
                         onClick={() => {
                           updateVerifyandSuspendStatus(
                             popupData?._id,
-                            "Suspended"
+                            "Suspended",
                           );
                         }}
                       >

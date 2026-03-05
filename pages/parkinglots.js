@@ -4,21 +4,22 @@ import isAuth from "@/components/isAuth";
 import { Api } from "@/services/service";
 import { useRouter } from "next/router";
 import Addparkinglot from "@/components/Addparkinglot";
-import moment from "moment";
-import { Delete, DeleteIcon, Edit, Eye, Plus, Trash2 } from "lucide-react";
+import {  Edit, Eye, Plus, Trash2, X } from "lucide-react";
 import { ConfirmModal } from "@/components/deleteModel";
 
-function parkinglots(props) {
+function Parkinglots(props) {
   const router = useRouter();
   const [parkinglotData, setparkinglotData] = useState([]);
   const [popupData, setpopupData] = useState({});
   const [openparkinglot, setOpenparkinglot] = useState(false);
   const [editId, setEditId] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [BuildingData, setBuildingData] = useState([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     getAllparkinglot();
+    getAllBuilding();
   }, []);
 
   const getAllparkinglot = async () => {
@@ -27,7 +28,7 @@ function parkinglots(props) {
     Api("get", `parkingLot/getAllParkingLots`, "", router).then(
       (res) => {
         props.loader(false);
-        setparkinglotData(res.data);
+        setparkinglotData(res.data.data);
       },
       (err) => {
         props.loader(false);
@@ -35,6 +36,22 @@ function parkinglots(props) {
       },
     );
   };
+
+  
+    const getAllBuilding = async () => {
+      props.loader(true);
+  
+      Api("get", `building/getAllBuilding`, "", router).then(
+        (res) => {
+          props.loader(false);
+          setBuildingData(res.data);
+        },
+        (err) => {
+          props.loader(false);
+          props.toaster({ type: "error", message: err?.message });
+        },
+      );
+    };
 
   const Deleteparkinglot = async () => {
     try {
@@ -66,7 +83,7 @@ function parkinglots(props) {
     }
   };
 
-  function ContactPersonName({ value }) {
+  function VehicleType({ value }) {
     return (
       <div>
         <p className="text-black text-base font-normal text-center">{value}</p>
@@ -74,7 +91,7 @@ function parkinglots(props) {
     );
   }
 
-  function parkinglotName({ value }) {
+  function spaceId({ value }) {
     return (
       <div>
         <p className="text-black text-base font-normal text-center">{value}</p>
@@ -82,7 +99,7 @@ function parkinglots(props) {
     );
   }
 
-  function Phone({ value }) {
+  function Availability({ value }) {
     return (
       <div>
         <p className="text-black text-base font-normal text-center">{value}</p>
@@ -90,7 +107,7 @@ function parkinglots(props) {
     );
   }
 
-  function Contact({ value }) {
+  function AccessMode({ value }) {
     return (
       <div>
         <p className="text-black text-base font-normal text-center">{value}</p>
@@ -98,13 +115,18 @@ function parkinglots(props) {
     );
   }
 
-  function date({ row, value }) {
-    // console.log(row?.original)
+  function RentalRule({ value }) {
     return (
       <div>
-        <p className="text-black text-base font-normal text-center">
-          {moment(value).format("DD-MM-YYYY")}
-        </p>
+        <p className="text-black text-base font-normal text-center">{value}</p>
+      </div>
+    );
+  }
+
+  function Queue({ value }) {
+    return (
+      <div>
+        <p className="text-black text-base font-normal text-center">{value}</p>
       </div>
     );
   }
@@ -121,8 +143,7 @@ function parkinglots(props) {
       </div>
     );
   }
-
-  function view({ row, value }) {
+    function view({ row, value }) {
     return (
       <div className="flex justify-center items-center gap-2">
         <button
@@ -160,36 +181,42 @@ function parkinglots(props) {
   const columns = useMemo(
     () => [
       {
-        Header: "parkinglot Name",
-        accessor: "parkinglot_name",
-        Cell: parkinglotName,
+        Header: "Space ID",
+        accessor: "space_id",
+        Cell: spaceId,
       },
       {
-        Header: "Address",
+        Header: "Parking Address",
         accessor: "address",
         Cell: Address,
       },
       {
-        Header: "Phone",
-        accessor: "phone_no",
-        Cell: Phone,
+        Header: "Vehicle Type",
+        accessor: "vehicle_type",
+        Cell: VehicleType,
+      },
+
+      {
+        Header: "Availability",
+        accessor: "availability",
+        Cell: Availability,
       },
       {
-        Header: "Contact Name",
-        accessor: "name",
-        Cell: ContactPersonName,
+        Header: "Access Mode",
+        accessor: "access_mode",
+        Cell: AccessMode,
       },
       {
-        Header: "Contact",
-        accessor: "contact_no",
-        Cell: Contact,
+        Header: "Rental Rule",
+        accessor: "rental_rule",
+        Cell: RentalRule,
       },
       {
-        Header: "Created",
-        accessor: "createdAt",
-        Cell: date,
+        Header: "Queue",
+        accessor: "enable_queue",
+        Cell: Queue,
       },
-      {
+       {
         Header: "View",
         // accessor: 'date',
         Cell: view,
@@ -201,38 +228,70 @@ function parkinglots(props) {
   return (
     <div className="flex flex-col min-h-screen bg-white p-6  ">
       <div className="flex justify-between items-center pb-5">
-        <h1 className="text-black font-bold border-b-[4px] border-[#1E1E1E] text-2xl">
-          parkinglots
+        <h1 className="text-black font-bold border-b-4 border-[#1E1E1E] text-2xl">
+          Parking Lots
         </h1>
         <button
-          className="bg-black px-4 py-1.5 rounded-[6px] flex justify-center items-center text-white font-normal text-base gap-1 cursor-pointer"
+          className="bg-black px-4 py-1.5 rounded-md flex justify-center items-center text-white font-normal text-base gap-1 cursor-pointer"
           onClick={() => {}}
         >
           <Plus />
-          Import parkinglots
+          Import Parkings
         </button>
       </div>
       <div className="flex justify-end items-end pb-5">
         <button
-          className="bg-black px-4 py-1.5 rounded-[6px] flex justify-center items-center text-white font-normal text-base gap-1 cursor-pointer"
+          className="bg-black px-4 py-1.5 rounded-md flex justify-center items-center text-white font-normal text-base gap-1 cursor-pointer"
           onClick={() => setOpenparkinglot(true)}
         >
           <Plus />
-          Add parkinglot Address
+          Add Parking Lots
         </button>
       </div>
 
-      <div className="">
-        <Table columns={columns} data={parkinglotData} />
+      <div>
+        {parkinglotData?.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            {/* Icon */}
+            <div className="bg-gray-100 p-6 rounded-full mb-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-10 h-10 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 17V7h6a4 4 0 010 8H9z"
+                />
+              </svg>
+            </div>
+
+            <p className="text-lg font-semibold text-gray-700">
+              No Parking Lots Found
+            </p>
+
+            <p className="text-sm text-gray-500 mt-1">
+              There are no parking spaces created for this building yet.
+            </p>
+          </div>
+        ) : (
+          <Table columns={columns} data={parkinglotData} />
+        )}
       </div>
 
       {openparkinglot && (
         <Addparkinglot
           open={openparkinglot}
-          setOpenAddparkinglot={setOpenparkinglot}
+          setOpen={setOpenparkinglot}
           editId={editId}
+          BuildingData={BuildingData}
           editData={popupData}
-          fetchparkinglot={getAllparkinglot}
+          setpopupData={setpopupData}
+          fetchParkingLots={getAllparkinglot}
           loader={props.loader}
           toaster={props.toaster}
         />
@@ -249,66 +308,40 @@ function parkinglots(props) {
       />
 
       {open && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 md:px-0 px-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-3xl w-full p-6">
-            <div className="grid md:grid-cols-2 gap-6 items-center">
-              {/* Left Image */}
-              <div className="flex flex-col items-center">
-                <p className="text-sm text-gray-500 mb-2 font-medium">
-                  Uploaded parkinglot Image
-                </p>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+            
+            <div className="flex justify-between items-center px-6 py-4 border-b">
+              <h2 className="text-lg font-semibold">Parking Detail</h2>
 
-                <div className="relative w-full">
-                  <img
-                    src={popupData?.parkinglot_image}
-                    alt="parkinglot"
-                    className="w-full h-[220px] object-cover rounded-lg"
-                  />
-                </div>
-              </div>
-
-              <div className="text-sm text-gray-700 space-y-2 border-l md:pl-6">
-                <p>
-                  <span className="font-medium">Date :</span>{" "}
-                  {moment(popupData?.created).format("DD-MM-YYYY")}
-                </p>
-
-                <p>
-                  <span className="font-medium">parkinglot Name :</span>{" "}
-                  {popupData?.parkinglot_name}
-                </p>
-
-                <p>
-                  <span className="font-medium">Address :</span>{" "}
-                  {popupData?.address}
-                </p>
-
-                <p>
-                  <span className="font-medium">Phone Number :</span>{" "}
-                  {popupData?.phone_no}
-                </p>
-
-                <p>
-                  <span className="font-medium">Parking Numbers :</span>{" "}
-                  {popupData?.parking}
-                </p>
-
-                <p>
-                  <span className="font-medium">EV Charging :</span>{" "}
-                  {popupData?.evCharging ? "Yes" : "No"}
-                </p>
-
-                <p>
-                  <span className="font-medium">Charger :</span>{" "}
-                  {popupData?.charger}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex justify-center mt-6">
               <button
                 onClick={() => setOpen(false)}
-                className="bg-black cursor-pointer text-white px-6 py-2 rounded-md hover:bg-gray-800"
+                className="text-gray-500 hover:text-black text-xl"
+              >
+                <X />
+              </button>
+            </div>
+
+            <div className="text-sm">
+              <Row label="Space ID" value={popupData?.space_id} />
+
+              <Row label="Location" value={popupData?.address} />
+
+              <Row label="Vehicle Type" value={popupData?.vehicle_type} />
+
+              <Row label="Rental Rule" value={popupData?.rental_rule} />
+
+              <Row label="Availability" value={popupData?.availability} />
+
+              <Row label="Access mode" value={popupData?.access_mode} />
+
+              <Row label="Queue" value={popupData?.enable_queue} />
+            </div>
+
+            <div className="flex justify-center py-5 border-t">
+              <button
+                onClick={() => setOpen(false)}
+                className="bg-black cursor-pointer text-white px-8 py-2 rounded-md"
               >
                 Close
               </button>
@@ -320,6 +353,12 @@ function parkinglots(props) {
   );
 }
 
-export default isAuth(parkinglots);
+export default isAuth(Parkinglots);
 
+const Row = ({ label, value }) => (
+  <div className="flex justify-between px-6 py-3 border-b last:border-b-0">
+    <span className="text-gray-600">{label}</span>
 
+    <span className="font-medium text-gray-800">{value || "-"}</span>
+  </div>
+);

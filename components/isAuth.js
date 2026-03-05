@@ -2,10 +2,27 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 
 const roleAccess = {
-  superadmin: ["/", "/organization"],
-  admin: ["/", "/reports", "/users", "/officers", "/notifications", "/technician", "/parking"],
-  landlord_admin: ["/", "/Building", "/users","parkinglots"],
-  landlord: ["/", "/reports"],
+  superadmin: ["/", "/organization", "/profile", "/Settings"],
+  admin: [
+    "/",
+    "/reports",
+    "/users",
+    "/officers",
+    "/notifications",
+    "/technician",
+    "/parking",
+    "/profile",
+    "/Settings",
+  ],
+  landlord_admin: ["/", "/landlords", "/profile", "/Settings", "/users"],
+  landlord: [
+    "/",
+    "/profile",
+    "/Parkinglots",
+    "/Building",
+    "/Settings",
+    "/users",
+  ],
 };
 
 const publicPages = ["/privacyPolicy", "/termsAndConditions"];
@@ -35,8 +52,8 @@ const isAuth = (Component) => {
 
     useEffect(() => {
       if (!auth && !publicPages.includes(pathname)) {
-        // localStorage.clear();
-        // router.replace("/login");
+        localStorage.clear();
+        router.replace("/login");
       }
     }, [auth, pathname]);
 

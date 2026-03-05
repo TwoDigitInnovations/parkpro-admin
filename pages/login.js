@@ -30,7 +30,8 @@ export default function Login(props) {
             res?.status &&
             (res?.data?.user?.role === "admin" ||
               res?.data?.user?.role === "superadmin" ||
-              res?.data?.user?.role === "landlord_admin")
+              res?.data?.user?.role === "landlord_admin" || 
+            res.data.user.role === "landlord")
           ) {
             localStorage.setItem("userDetail", JSON.stringify(res.data.user));
             setUser(res.data?.user);

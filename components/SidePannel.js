@@ -24,27 +24,33 @@ function SidePannel({ open, setOpen }) {
       icon: <FaRegCircleUser size={20} />,
       access: ["superadmin"],
     },
+     {
+      href: "/landlords",
+      title: "Land Lords",
+      icon: <UserPlusIcon size={20} />,
+      access: ["landlord_admin","landlord"],
+    },
 
     {
       href: "/Building",
       title: "Add Buildings",
       icon: <ParkingMeter size={20} />,
-      access: ["admin", "landlord_admin"],
+      access: ["admin", "landlord"],
     },
 
-    // {
-    //   href: "/users",
-    //   title: "Users",
-    //   icon: <FaRegCircleUser size={20} />,
-    //   access: ["admin", "landlord_admin"],
-    // },
+    {
+      href: "/users",
+      title: "Users",
+      icon: <FaRegCircleUser size={20} />,
+      access: ["admin", "landlord_admin","landlord"],
+    },
 
     // Admin Only
     {
       href: "/reports",
       title: "Reports",
       icon: <FiFileText size={20} />,
-      access: ["admin", "landlord"], // landlord ko bhi reports allowed
+      access: ["admin"], 
     },
 
     {
@@ -76,46 +82,45 @@ function SidePannel({ open, setOpen }) {
     },
 
     {
-      href: "/parkinglots",
+      href: "/Parkinglots",
       title: "Parking Lots",
       icon: <ParkingMeter size={20} />,
-      access: ["landlord_admin"],
+      access: ["landlord"],
     },
     {
       href: "/Rentals",
       title: "Rentals",
       icon: <UserPlusIcon size={20} />,
-      access: ["landlord_admin"],
+      access: ["landlord"],
     },
+     
   ];
 
-
-const logOut = () => {
-  Swal.fire({
-    title: "Logout",
-    text: "Are you sure you want to logout?",
-    showCancelButton: true,
-    confirmButtonText: "Logout",
-    cancelButtonText: "Cancel",
-    confirmButtonColor: "#ff2d2d",
-    cancelButtonColor: "#1f2937",
-    reverseButtons: true,
-    customClass: {
-      popup: "rounded-2xl",
-      title: "text-xl font-semibold",
-      confirmButton: "px-6 py-2",
-      cancelButton: "px-6 py-2"
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      setUser({});
-      localStorage.removeItem("userDetail");
-      localStorage.removeItem("token");
-      router.push("/login");
-    }
-  });
-};
-
+  const logOut = () => {
+    Swal.fire({
+      title: "Logout",
+      text: "Are you sure you want to logout?",
+      showCancelButton: true,
+      confirmButtonText: "Logout",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#ff2d2d",
+      cancelButtonColor: "#1f2937",
+      reverseButtons: true,
+      customClass: {
+        popup: "rounded-2xl",
+        title: "text-xl font-semibold",
+        confirmButton: "px-6 py-2",
+        cancelButton: "px-6 py-2",
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setUser({});
+        localStorage.removeItem("userDetail");
+        localStorage.removeItem("token");
+        router.push("/login");
+      }
+    });
+  };
 
   return (
     <>
@@ -147,7 +152,7 @@ const logOut = () => {
 
         <div className="flex-1 overflow-y-auto px-4">
           <Link
-            href="/AddBuilding"
+            href="/"
             className="flex items-center justify-between px-4 py-3 rounded-xl bg-white text-black mb-2"
           >
             <div className="flex items-center gap-3">
@@ -181,44 +186,13 @@ const logOut = () => {
               </Link>
             ) : null,
           )}
-          {/* <Link
-            href="/AddBuilding"
-            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 mb-2"
-          >
-            <span>Add Buildings</span>
-            <ChevronRight size={18} />
-          </Link>
-
-          <Link
-            href="/queue"
-            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 mb-2"
-          >
-            <span>Queue</span>
-            <ChevronRight size={18} />
-          </Link>
-
-          <Link
-            href="/services"
-            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 mb-2"
-          >
-            <span>Services</span>
-            <ChevronRight size={18} />
-          </Link>
-
-          <Link
-            href="/revenue"
-            className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10 mb-2"
-          >
-            <span>Revenue & Payouts</span>
-            <ChevronRight size={18} />
-          </Link> */}
-
+        
           <p className="text-gray-400 text-xs mt-6 mb-3 px-2 tracking-wider">
             OTHER MENU
           </p>
 
           <Link
-            href="/settings"
+            href="/Settings"
             className="flex items-center justify-between px-4 py-3 rounded-xl text-gray-300 hover:bg-white/10"
           >
             <span>Setting</span>
@@ -226,9 +200,11 @@ const logOut = () => {
           </Link>
         </div>
 
-        {/* User Card */}
+ 
         <div className="p-4 border-t border-white/10">
-          <div className="bg-white cursor-pointer text-black rounded-xl p-3 flex items-center gap-3 mb-3">
+          <div className="bg-white cursor-pointer text-black rounded-xl p-3 flex items-center gap-3 mb-3"
+          onClick={()=> router.push("/profile")}
+          >
             {/* <img
               src="https://i.pravatar.cc/40"
               className="w-10 h-10 rounded-full"
@@ -249,8 +225,6 @@ const logOut = () => {
             <FiLogOut />
             Logout
           </button>
-
-         
         </div>
       </aside>
     </>
