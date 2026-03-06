@@ -15,7 +15,7 @@ function AddLandlords({
     name: "",
     email: "",
     phone: "",
-    role: "",
+
     password: "",
   });
 
@@ -25,7 +25,7 @@ function AddLandlords({
         name: editData.name || "",
         email: editData.email || "",
         phone: editData.phone || "",
-        role: editData.role || "",
+        password: editData.password || "",
       });
     }
   }, [editId, editData]);
@@ -37,7 +37,6 @@ function AddLandlords({
   const handleSubmit = (e) => {
     e.preventDefault();
 
-   
     if (!form.name || !form.phone || !form.email) {
       toaster({ type: "error", message: "Please fill required fields" });
       return;
@@ -49,11 +48,10 @@ function AddLandlords({
     data.append("name", form.name);
     data.append("email", form.email);
     data.append("phone", form.phone);
-    data.append("role", "landlord");
 
     const url = editId
       ? `auth/updatelandlords/${editId}`
-      : `auth/create-landlords`;
+      : `auth/create_landlord`;
 
     Api("post", url, data, router, true)
       .then((res) => {
@@ -107,7 +105,6 @@ function AddLandlords({
             />
           </div>
 
-      
           <div className="flex flex-col gap-2">
             <label className="text-md font-semibold text-gray-700">
               E-mail
@@ -122,9 +119,6 @@ function AddLandlords({
             />
           </div>
 
-       
-
-        
           <div className="flex flex-col gap-2">
             <label className="text-md font-semibold text-gray-700">
               Phone Number
@@ -139,14 +133,13 @@ function AddLandlords({
             />
           </div>
 
-          {/* Role */}
           <div className="flex flex-col gap-2">
             <label className="text-md font-semibold text-gray-700">
               Password
             </label>
             <input
-              type="text"
-              name="role"
+              type="password"
+              name="password"
               value={form.password}
               onChange={handleChange}
               placeholder="Enter Password"
