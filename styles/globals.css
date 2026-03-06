@@ -40,3 +40,21 @@ body {
 .boxShadow {
   box-shadow: 2px 4px 4px 0px #00000040;
 }
+
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 20px;
+}
+.ProseMirror {
+  min-height: 300px;
+  outline: none;
+}
+
+.ProseMirror p {
+  margin: 0.5rem 0;
+}

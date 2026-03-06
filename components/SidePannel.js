@@ -93,6 +93,12 @@ function SidePannel({ open, setOpen }) {
       icon: <UserPlusIcon size={20} />,
       access: ["landlord"],
     },
+    {
+      href: "/ContentManagement",
+      title: "Content Management",
+      icon: <FaRegCircleUser size={20} />,
+      access: ["admin"],
+    },
   ];
 
   const logOut = () => {

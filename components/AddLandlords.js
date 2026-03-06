@@ -14,7 +14,6 @@ function AddLandlords({
   const [form, setForm] = useState({
     name: "",
     email: "",
-    date: "",
     phone: "",
     role: "",
     password: "",
@@ -25,7 +24,6 @@ function AddLandlords({
       setForm({
         name: editData.name || "",
         email: editData.email || "",
-        date: editData.date || "",
         phone: editData.phone || "",
         role: editData.role || "",
       });
@@ -50,7 +48,6 @@ function AddLandlords({
     const data = new FormData();
     data.append("name", form.name);
     data.append("email", form.email);
-    data.append("date", form.date);
     data.append("phone", form.phone);
     data.append("role", "landlord");
 
@@ -97,7 +94,7 @@ function AddLandlords({
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Full Name */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+            <label className="text-md font-semibold text-gray-700">
               Full Name
             </label>
             <input
@@ -110,9 +107,9 @@ function AddLandlords({
             />
           </div>
 
-          {/* E-mail */}
+      
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+            <label className="text-md font-semibold text-gray-700">
               E-mail
             </label>
             <input
@@ -125,21 +122,11 @@ function AddLandlords({
             />
           </div>
 
-          {/* Date */}
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">Date</label>
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-black outline-none transition-all text-gray-500"
-            />
-          </div>
+       
 
-          {/* Phone Number */}
+        
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+            <label className="text-md font-semibold text-gray-700">
               Phone Number
             </label>
             <input
@@ -154,7 +141,7 @@ function AddLandlords({
 
           {/* Role */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-semibold text-gray-700">
+            <label className="text-md font-semibold text-gray-700">
               Password
             </label>
             <input

@@ -5,19 +5,20 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import { useEffect } from "react";
 
+import { Bold, Italic, Underline as UnderlineIcon, List } from "lucide-react";
+
 export default function TipTapEditor({ value, onChange }) {
   const editor = useEditor({
     extensions: [StarterKit, Underline],
     content: value || "",
+    immediatelyRender: false,
     editorProps: {
       attributes: {
-        class:
-          "min-h-[300px] p-4 outline-none prose max-w-none",
+        class: "min-h-[300px] p-4 outline-none prose max-w-none",
       },
     },
     onUpdate: ({ editor }) => {
-      const html = editor.getHTML();
-      onChange(html);
+      onChange(editor.getHTML());
     },
   });
 
@@ -31,39 +32,42 @@ export default function TipTapEditor({ value, onChange }) {
 
   return (
     <div className="border rounded-lg">
-      
+
       {/* Toolbar */}
       <div className="border-b p-2 flex gap-2 flex-wrap">
+
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className="px-3 py-1 border rounded"
+          className="p-2 border rounded hover:bg-gray-100"
         >
-          Bold
+          <Bold size={18} />
         </button>
 
         <button
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className="px-3 py-1 border rounded"
+          className="p-2 border rounded hover:bg-gray-100"
         >
-          Italic
+          <Italic size={18} />
         </button>
 
         <button
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className="px-3 py-1 border rounded"
+          className="p-2 border rounded hover:bg-gray-100"
         >
-          Underline
+          <UnderlineIcon size={18} />
         </button>
 
         <button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className="px-3 py-1 border rounded"
+          className="p-2 border rounded hover:bg-gray-100"
         >
-          List
+          <List size={18} />
         </button>
+
       </div>
 
       <EditorContent editor={editor} />
+
     </div>
   );
 }
