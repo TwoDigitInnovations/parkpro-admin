@@ -122,7 +122,7 @@ function SidePannel({ open, setOpen }) {
   };
 
   console.log(router.pathname);
-  
+
   return (
     <>
       {open && (
@@ -133,7 +133,7 @@ function SidePannel({ open, setOpen }) {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-full w-72 bg-[#000000]
+        className={`fixed top-0 left-0 h-full w-70 bg-[#000000]
  text-white z-50 flex flex-col transition-transform duration-300
         ${open ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       >

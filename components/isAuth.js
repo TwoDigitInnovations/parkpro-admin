@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 const roleAccess = {
@@ -15,14 +15,7 @@ const roleAccess = {
     "/Settings",
   ],
   landlord_admin: ["/", "/landlords", "/profile", "/Settings", "/users"],
-  landlord: [
-    "/",
-    "/profile",
-    "/Parkinglots",
-    "/Building",
-    "/Settings",
-    "/users",
-  ],
+  landlord: ["/", "/profile", "/Parkinglots", "/Building", "/Settings", "/users"],
 };
 
 const publicPages = ["/privacyPolicy", "/termsAndConditions"];
@@ -32,9 +25,9 @@ const isAuth = (Component) => {
     const router = useRouter();
     const { pathname } = router;
 
-    let auth = false;
+    const [auth, setAuth] = useState(null);
 
-    if (typeof window !== "undefined") {
+    useEffect(() => {
       const user = localStorage.getItem("userDetail");
       const token = localStorage.getItem("token");
 
@@ -43,19 +36,23 @@ const isAuth = (Component) => {
         const role = parsedUser?.role;
 
         if (publicPages.includes(pathname)) {
-          auth = true;
+          setAuth(true);
         } else {
-          auth = roleAccess[role]?.includes(pathname);
+          setAuth(roleAccess[role]?.includes(pathname));
         }
+      } else {
+        setAuth(false);
       }
-    }
+    }, [pathname]);
 
     useEffect(() => {
-      if (!auth && !publicPages.includes(pathname)) {
+      if (auth === false && !publicPages.includes(pathname)) {
         localStorage.clear();
         router.replace("/login");
       }
     }, [auth, pathname]);
+
+    if (auth === null) return null;
 
     return auth || publicPages.includes(pathname) ? (
       <Component {...props} />

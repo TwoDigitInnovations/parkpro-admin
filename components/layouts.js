@@ -14,33 +14,22 @@ const Layout = ({ children }) => {
 
   return (
     <div className="flex min-h-screen bg-white">
-      
-      
-      {!isPublicPage && (
-        <SidePannel open={open} setOpen={setOpen} />
-      )}
-
+      {!isPublicPage && <SidePannel open={open} setOpen={setOpen} />}
 
       <div className="flex-1 flex flex-col">
         {!isPublicPage && (
-          <div className="sticky top-0 z-40 ps-4">
+          <div className="sticky top-0 z-40">
             <div className="flex items-center justify-between ">
-              <button
-                className="lg:hidden text-2xl"
-                onClick={() => setOpen(true)}
-              >
-                <FiMenu />
-              </button>
+            
 
-              <Navbar />
+              <Navbar setOpen={setOpen} />
             </div>
           </div>
         )}
 
-        <main className={`flex-1 ${isPublicPage ? "pl-0" : "md:pl-70"}`}>
+        <main className={` ${isPublicPage ? "pl-0" : "md:pl-70"}`}>
           {children}
         </main>
-
       </div>
     </div>
   );

@@ -247,7 +247,7 @@ function Landlords(props) {
       {openLandlords && (
         <AddLandlords
           open={openLandlords}
-          setOpenAddLandlords={setOpenLandlords}
+          setOpen={setOpenLandlords}
           editId={editId}
           editData={popupData}
           setpopupData={setpopupData}
