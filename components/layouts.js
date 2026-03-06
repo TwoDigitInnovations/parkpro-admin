@@ -27,7 +27,7 @@ const Layout = ({ children }) => {
           </div>
         )}
 
-        <main className={` ${isPublicPage ? "pl-0" : "md:pl-70"}`}>
+        <main className={` ${isPublicPage ? "pl-0" : "md:pl-72"}`}>
           {children}
         </main>
       </div>
