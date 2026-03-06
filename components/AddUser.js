@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Api } from "@/services/service";
 import { useRouter } from "next/router";
 
-function AddLandlords({
+function AddUser({
   editId,
   editData,
   setOpen,
@@ -15,7 +15,6 @@ function AddLandlords({
     name: "",
     email: "",
     phone: "",
-
     password: "",
   });
 
@@ -62,8 +61,8 @@ function AddLandlords({
     };
     
     const url = editId
-      ? `auth/updatelandlords/${editId}`
-      : `auth/create_landlord`;
+      ? `auth/updateUser/${editId}`
+      : `auth/create_user`;
 
     Api("post", url, data, router, true)
       .then((res) => {
@@ -76,7 +75,7 @@ function AddLandlords({
               : "Landlord created successfully",
           });
           fetchBuilding();
-          setOpenAddBuilding(false);
+          setOpen(false);
         } else {
           toaster({
             type: "error",
@@ -98,7 +97,7 @@ function AddLandlords({
       <div className="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-3 md:p-6 max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <h2 className="text-2xl font-bold text-gray-800 mb-8">
-          {editId ? "Edit Landlord Details" : "Add Landlords"}
+          {editId ? "Edit User Details" : "Add User"}
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
@@ -181,4 +180,4 @@ function AddLandlords({
   );
 }
 
-export default AddLandlords;
+export default AddUser;

@@ -102,6 +102,13 @@ function Landlords(props) {
       </div>
     );
   }
+  function uniqueCode({ value }) {
+    return (
+      <div>
+        <p className="text-black text-base font-normal text-center">{value}</p>
+      </div>
+    );
+  }
 
   function date({ row, value }) {
     // console.log(row?.original)
@@ -114,18 +121,7 @@ function Landlords(props) {
     );
   }
 
-  function Address({ value }) {
-    const shortAddress =
-      value?.length > 26 ? value.slice(0, 26) + "..." : value;
 
-    return (
-      <div>
-        <p className="text-black text-base font-normal text-center">
-          {shortAddress}
-        </p>
-      </div>
-    );
-  }
 
   function view({ row, value }) {
     return (
@@ -139,7 +135,7 @@ function Landlords(props) {
         >
           <Eye className=" text-white " size={20} />
         </button>
-        <button
+        {/* <button
           className="bg-black cursor-pointer py-2 px-4 rounded-[10px] flex justify-center items-center"
           onClick={() => {
             setEditId(row.original._id);
@@ -148,7 +144,7 @@ function Landlords(props) {
           }}
         >
           <Edit className=" text-white " size={20} />
-        </button>
+        </button> */}
         <button
           className="bg-black cursor-pointer py-2 px-4 rounded-[10px] flex justify-center items-center"
           onClick={() => {
@@ -180,6 +176,11 @@ function Landlords(props) {
         Header: "Email",
         accessor: "email",
         Cell: Email,
+      },
+      {
+        Header: "Unique Code",
+        accessor: "uniqueCode",
+        Cell: uniqueCode,
       },
       {
         Header: "Created",
@@ -270,7 +271,6 @@ function Landlords(props) {
       {open && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 md:px-0 px-4">
           <div className="bg-white rounded-2xl shadow-2xl w-[420px] overflow-hidden relative p-4">
-         
             <button
               onClick={() => setOpen(false)}
               className="absolute top-3 right-3 bg-white shadow rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-100"
@@ -278,16 +278,14 @@ function Landlords(props) {
               ✕
             </button>
 
-          
             <div className="w-full h-[220px]">
               <img
                 src={popupData?.image}
-                alt="building"
+                alt="lanlords"
                 className="w-full h-full object-cover"
               />
             </div>
 
-            {/* Content */}
             <div className="p-2">
               <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
                 Landlords Details
@@ -316,9 +314,9 @@ function Landlords(props) {
                   <span className="break-all">{popupData?.email}</span>
                 </div>
 
-                <div className="pt-2">
-                  <span className="font-medium text-gray-500">Address</span>
-                  <p className="text-gray-700 mt-1">{popupData?.address}</p>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="font-medium text-gray-500"> Unique Code</span>
+                  <p className="text-gray-700 mt-1">{popupData?.  uniqueCode}</p>
                 </div>
               </div>
 

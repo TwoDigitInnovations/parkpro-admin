@@ -13,7 +13,7 @@ function Profile(props) {
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone_no: "",
+    phone: "",
     house_no: "",
     street_name: "",
     city: "",
@@ -33,7 +33,7 @@ function Profile(props) {
         setForm({
           name: res.data?.name || "",
           email: res.data?.email || "",
-          phone_no: res.data?.phone_no || "",
+          phone: res.data?.phone || "",
           house_no: res.data?.house_no || "",
           street_name: res.data?.street_name || "",
           city: res.data?.city || "",
@@ -65,7 +65,7 @@ function Profile(props) {
   };
 
   const updateProfile = () => {
-    if (!form.name || !form.phone_no) {
+    if (!form.name || !form.phone) {
       toaster({ type: "error", message: "Please fill required fields" });
       return;
     }
@@ -73,11 +73,11 @@ function Profile(props) {
     loader(true);
     const data = new FormData();
     data.append("name", form.name);
-    data.append("phone_no", form.phone_no);
-    data.append("house_no", form.house_no);
+    data.append("phone", form.phone);
+    data.append("house", form.house_no);
     if (imageFile) data.append("image", imageFile);
 
-    Api("post", `auth/update-profile`, data, router, true)
+    Api("post", `auth/updateprofile`, data, router, true)
       .then((res) => {
         loader(false);
         if (res?.status) {
@@ -163,8 +163,8 @@ function Profile(props) {
           />
           <InfoField
             label="Phone Number"
-            name="phone_no"
-            value={form.phone_no}
+            name="phone"
+            value={form.phone}
             isEditing={isEditing}
             onChange={handleInputChange}
           />

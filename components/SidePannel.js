@@ -82,7 +82,7 @@ function SidePannel({ open, setOpen }) {
     },
 
     {
-      href: "/Parkinglots",
+      href: "/parkinglots",
       title: "Parking Lots",
       icon: <ParkingMeter size={20} />,
       access: ["landlord"],

@@ -15,7 +15,7 @@ const roleAccess = {
     "/Settings",
   ],
   landlord_admin: ["/", "/landlords", "/profile", "/Settings", "/users"],
-  landlord: ["/", "/profile", "/Parkinglots", "/Building", "/Settings", "/users"],
+  landlord: ["/", "/profile", "/parkinglots", "/Building", "/Settings", "/users"],
 };
 
 const publicPages = ["/privacyPolicy", "/termsAndConditions"];
