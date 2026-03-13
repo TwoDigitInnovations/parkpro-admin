@@ -82,16 +82,23 @@ function Parkinglots(props) {
     }
   };
 
-function VehicleType({ value }) {
-  return (
-    <div>
-      <p className="text-black text-base font-normal text-center">
-        {Array.isArray(value) ? value.join(", ") : value}
-      </p>
-    </div>
-  );
-}
+  function VehicleType({ value }) {
+    return (
+      <div>
+        <p className="text-black text-base font-normal text-center">
+          {Array.isArray(value) ? value.join(", ") : value}
+        </p>
+      </div>
+    );
+  }
 
+  function BuildingName({ value }) {
+    return (
+      <div>
+        <p className="text-black text-base font-normal text-center">{value}</p>
+      </div>
+    );
+  }
 
   function spaceId({ value }) {
     return (
@@ -178,6 +185,11 @@ function VehicleType({ value }) {
         Header: "Space ID",
         accessor: "space_id",
         Cell: spaceId,
+      },
+      {
+        Header: "Building Name",
+        accessor: "building.building_name",
+        Cell: BuildingName,
       },
       {
         Header: "Parking Address",
@@ -370,8 +382,9 @@ function VehicleType({ value }) {
             <div className="flex justify-center py-5 border-t">
               <button
                 onClick={() => {
-                  setpopupData("")
-                  setOpen(false)}}
+                  setpopupData("");
+                  setOpen(false);
+                }}
                 className="bg-black cursor-pointer text-white px-8 py-2 rounded-md"
               >
                 Close

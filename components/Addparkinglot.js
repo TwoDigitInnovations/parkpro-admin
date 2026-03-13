@@ -10,7 +10,6 @@ function AddParkingLot({
   setOpen,
   editId,
   editData,
-  buildingId,
   fetchParkingLots,
   loader,
   toaster,
@@ -58,16 +57,21 @@ function AddParkingLot({
         ...form,
         space_id: editData.space_id || "",
         address: editData.address || "",
-        building: editData.building || "",
+        building: editData.building._id || "",
         vehicle_type: editData.vehicle_type || "",
         availability: editData.availability || "Available",
         access_mode: editData.access_mode || "Tenant only",
         enable_queue: editData.enable_queue || "Off",
         slots: editData.slots || [],
         pricing: editData.pricing || form.pricing,
+        longitude: editData.location.coordinates[0],
+        latitude: editData.location.coordinates[1],
       });
     }
   }, [editId, editData]);
+
+  console.log("editData", editData);
+  console.log("form", form);
 
   const handleChange1 = (e) => {
     setForm({
@@ -101,13 +105,12 @@ function AddParkingLot({
   };
 
   const handleSubmit = () => {
-
     if (!form.building) {
       toaster({ type: "error", message: "Please Select a Building" });
       return;
     }
 
-    if (!form.space_id || !form.address ) {
+    if (!form.space_id || !form.address) {
       toaster({ type: "error", message: "Please fill required fields" });
       return;
     }
@@ -118,7 +121,7 @@ function AddParkingLot({
       space_id: form.space_id,
       address: form.address,
       vehicle_type: form.vehicle_type,
-
+      building: form.building,
       pricing: {
         hourly_rate: Number(form.pricing.hourly_rate),
         daily_rate: Number(form.pricing.daily_rate),
@@ -135,8 +138,6 @@ function AddParkingLot({
         type: "Point",
         coordinates: [Number(form.longitude), Number(form.latitude)],
       },
-
-      building: buildingId,
     };
 
     const url = editId
@@ -216,8 +217,6 @@ function AddParkingLot({
     }
   }, [open]);
 
-  console.log(form);
-  
   return (
     <section className="fixed inset-0 bg-black/50  flex items-center justify-center z-50 px-4">
       <div className="bg-white w-full max-w-lg rounded-xl shadow-lg p-6 max-h-[90vh] overflow-y-auto">
@@ -244,7 +243,8 @@ function AddParkingLot({
           label="Location"
           name="address"
           ref={autoRef}
-          placeholder="Search location..."
+          value={form.address}
+          onChange={(e) => setForm({ ...form, address: e.target.value })}
         />
 
         {/* <Select
