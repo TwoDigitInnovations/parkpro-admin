@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Api } from "@/services/service";
 import { useRouter } from "next/navigation";
+import Select from "react-select";
 
 function AddParkingLot({
   open,
@@ -23,42 +24,90 @@ function AddParkingLot({
   const [form, setForm] = useState({
     space_id: "",
     building: "",
-    vehicle_type: "",
-    rental_rule: "",
+    vehicle_type: [],
     availability: "Available",
     access_mode: "Tenant only",
     enable_queue: "Off",
-    address: " ",
+    address: "",
     latitude: "",
     longitude: "",
+
+    pricing: {
+      hourly_rate: "",
+      daily_rate: "",
+      monthly_rate: "",
+    },
+
+    slots: [],
+  });
+  const vehicleOptions = [
+    { value: "Car", label: "Car" },
+    { value: "Bike", label: "Bike" },
+    { value: "Truck", label: "Truck" },
+  ];
+
+  const [slotForm, setSlotForm] = useState({
+    slot_label: "",
+    row: "",
+    column: "",
   });
 
   useEffect(() => {
     if (editId && editData) {
       setForm({
+        ...form,
         space_id: editData.space_id || "",
         address: editData.address || "",
         building: editData.building || "",
-        latitude: editData.address || "",
-        longitude: editData.address || "",
         vehicle_type: editData.vehicle_type || "",
-        rental_rule: editData.rental_rule || "",
         availability: editData.availability || "Available",
         access_mode: editData.access_mode || "Tenant only",
         enable_queue: editData.enable_queue || "Off",
+        slots: editData.slots || [],
+        pricing: editData.pricing || form.pricing,
       });
     }
   }, [editId, editData]);
 
-  const handleChange = (e) => {
+  const handleChange1 = (e) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
   };
 
+  const addSlot = () => {
+    if (!slotForm.slot_label) return;
+
+    setForm((prev) => ({
+      ...prev,
+      slots: [
+        ...prev.slots,
+        {
+          slot_label: slotForm.slot_label,
+          position: {
+            row: Number(slotForm.row),
+            column: Number(slotForm.column),
+          },
+        },
+      ],
+    }));
+
+    setSlotForm({
+      slot_label: "",
+      row: "",
+      column: "",
+    });
+  };
+
   const handleSubmit = () => {
-    if (!form.space_id || !form.address) {
+
+    if (!form.building) {
+      toaster({ type: "error", message: "Please Select a Building" });
+      return;
+    }
+
+    if (!form.space_id || !form.address ) {
       toaster({ type: "error", message: "Please fill required fields" });
       return;
     }
@@ -66,7 +115,27 @@ function AddParkingLot({
     loader?.(true);
 
     const payload = {
-      ...form,
+      space_id: form.space_id,
+      address: form.address,
+      vehicle_type: form.vehicle_type,
+
+      pricing: {
+        hourly_rate: Number(form.pricing.hourly_rate),
+        daily_rate: Number(form.pricing.daily_rate),
+        monthly_rate: Number(form.pricing.monthly_rate),
+      },
+
+      slots: form.slots,
+
+      availability: form.availability,
+      access_mode: form.access_mode,
+      enable_queue: form.enable_queue,
+
+      location: {
+        type: "Point",
+        coordinates: [Number(form.longitude), Number(form.latitude)],
+      },
+
       building: buildingId,
     };
 
@@ -147,12 +216,15 @@ function AddParkingLot({
     }
   }, [open]);
 
+  console.log(form);
+  
   return (
-    <section className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+    <section className="fixed inset-0 bg-black/50  flex items-center justify-center z-50 px-4">
       <div className="bg-white w-full max-w-lg rounded-xl shadow-lg p-6 max-h-[90vh] overflow-y-auto">
         <h2 className="text-lg font-semibold mb-6">
           {editId ? "Edit Parking Lot" : "Add Parking Lots"}
         </h2>
+
         <Select1
           label="Select Building"
           value={form.building}
@@ -164,8 +236,8 @@ function AddParkingLot({
           label="Space ID"
           name="space_id"
           value={form.space_id}
-          placeholder="P-001"
-          onChange={handleChange}
+          placeholder="Space ID"
+          onChange={handleChange1}
         />
 
         <Input
@@ -175,21 +247,111 @@ function AddParkingLot({
           placeholder="Search location..."
         />
 
-        <Select
+        {/* <Select
           label="Vehicle Type"
           name="vehicle_type"
           value={form.vehicle_type}
           onChange={handleChange}
-          options={["Car", "Bike"]}
+          options={["Car", "Bike", "Truck"]}
+          multiple
+        /> */}
+
+        <div className="mb-4">
+          <label className="block text-sm mb-1">Vehicle Type</label>
+
+          <Select
+            isMulti
+            options={vehicleOptions}
+            value={vehicleOptions.filter((v) =>
+              form.vehicle_type.includes(v.value),
+            )}
+            onChange={(selected) =>
+              setForm({
+                ...form,
+                vehicle_type: selected.map((item) => item.value),
+              })
+            }
+          />
+        </div>
+
+        <Input
+          label="Hourly Rate"
+          value={form.pricing.hourly_rate}
+          placeholder="Hourly Rate"
+          onChange={(e) =>
+            setForm({
+              ...form,
+              pricing: { ...form.pricing, hourly_rate: e.target.value },
+            })
+          }
         />
 
-        <Select
-          label="Rental Rule"
-          name="rental_rule"
-          value={form.rental_rule}
-          onChange={handleChange}
-          options={["Hourly", "Daily", "Monthly"]}
+        <Input
+          label="Daily Rate"
+          placeholder="Daily Rate"
+          value={form.pricing.daily_rate}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              pricing: { ...form.pricing, daily_rate: e.target.value },
+            })
+          }
         />
+
+        <Input
+          label="Monthly Rate"
+          placeholder="Monthly Rate"
+          value={form.pricing.monthly_rate}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              pricing: { ...form.pricing, monthly_rate: e.target.value },
+            })
+          }
+        />
+
+        <h3 className="font-semibold mt-6 mb-3">Add Slot</h3>
+
+        <Input
+          label="Slot Label"
+          value={slotForm.slot_label}
+          placeholder="Label Name eg. ABC"
+          onChange={(e) =>
+            setSlotForm({ ...slotForm, slot_label: e.target.value })
+          }
+        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <Input
+            label="Row"
+            type="number"
+            placeholder="Row No. eg. 2"
+            value={slotForm.row}
+            onChange={(e) => setSlotForm({ ...slotForm, row: e.target.value })}
+          />
+
+          <Input
+            label="Column"
+            type="number"
+            placeholder="Column No. eg. 1"
+            value={slotForm.column}
+            onChange={(e) =>
+              setSlotForm({ ...slotForm, column: e.target.value })
+            }
+          />
+        </div>
+        <button
+          onClick={addSlot}
+          className="px-4 py-1.5 text-sm mb-2 bg-black text-white rounded"
+        >
+          Add Slot
+        </button>
+
+        {form.slots.map((slot, i) => (
+          <div key={i} className="text-sm border p-2 mt-2 rounded">
+            {slot.slot_label} - Row {slot.position.row} Col{" "}
+            {slot.position.column}
+          </div>
+        ))}
 
         <Toggle
           label="Availability"
@@ -218,14 +380,14 @@ function AddParkingLot({
               setpopupData({});
               setOpen(false);
             }}
-            className="px-5 py-2 border cursor-pointer rounded-lg"
+            className="px-5 py-2 border rounded-lg"
           >
             Cancel
           </button>
 
           <button
             onClick={handleSubmit}
-            className="px-5 py-2 bg-black cursor-pointer text-white rounded-lg"
+            className="px-5 py-2 bg-black text-white rounded-lg"
           >
             Save
           </button>
@@ -237,30 +399,16 @@ function AddParkingLot({
 
 export default AddParkingLot;
 
-const Input = ({ label, ...props }) => (
+const Input = React.forwardRef(({ label, ...props }, ref) => (
   <div className="mb-4">
     <label className="block text-sm mb-1">{label}</label>
     <input
+      ref={ref}
       {...props}
       className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
     />
   </div>
-);
-const Select = ({ label, options, ...props }) => (
-  <div className="mb-4">
-    <label className="block text-sm mb-1">{label}</label>
-
-    <select {...props} className="w-full border rounded-lg px-3 py-2 text-sm">
-      <option value="">Select</option>
-
-      {options.map((item, i) => (
-        <option key={i} value={item}>
-          {item}
-        </option>
-      ))}
-    </select>
-  </div>
-);
+));
 
 const Toggle = ({ label, value, options, onChange }) => {
   return (
@@ -273,8 +421,7 @@ const Toggle = ({ label, value, options, onChange }) => {
             key={i}
             onClick={() => onChange(item)}
             className={`px-4 py-1 text-sm rounded-full
-              ${value === item ? "bg-gray-200" : ""}
-            `}
+            ${value === item ? "bg-gray-200" : ""}`}
           >
             {item}
           </button>
@@ -303,4 +450,3 @@ const Select1 = ({ label, options = [], value, onChange }) => (
     </select>
   </div>
 );
-

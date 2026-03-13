@@ -4,7 +4,7 @@ import isAuth from "@/components/isAuth";
 import { Api } from "@/services/service";
 import { useRouter } from "next/router";
 import Addparkinglot from "@/components/Addparkinglot";
-import {  Edit, Eye, Plus, Trash2, X } from "lucide-react";
+import { Edit, Eye, Plus, Trash2, X } from "lucide-react";
 import { ConfirmModal } from "@/components/deleteModel";
 
 function Parkinglots(props) {
@@ -37,21 +37,20 @@ function Parkinglots(props) {
     );
   };
 
-  
-    const getAllBuilding = async () => {
-      props.loader(true);
-  
-      Api("get", `building/getAllBuilding`, "", router).then(
-        (res) => {
-          props.loader(false);
-          setBuildingData(res.data);
-        },
-        (err) => {
-          props.loader(false);
-          props.toaster({ type: "error", message: err?.message });
-        },
-      );
-    };
+  const getAllBuilding = async () => {
+    props.loader(true);
+
+    Api("get", `building/getAllBuilding`, "", router).then(
+      (res) => {
+        props.loader(false);
+        setBuildingData(res.data);
+      },
+      (err) => {
+        props.loader(false);
+        props.toaster({ type: "error", message: err?.message });
+      },
+    );
+  };
 
   const Deleteparkinglot = async () => {
     try {
@@ -83,13 +82,16 @@ function Parkinglots(props) {
     }
   };
 
-  function VehicleType({ value }) {
-    return (
-      <div>
-        <p className="text-black text-base font-normal text-center">{value}</p>
-      </div>
-    );
-  }
+function VehicleType({ value }) {
+  return (
+    <div>
+      <p className="text-black text-base font-normal text-center">
+        {Array.isArray(value) ? value.join(", ") : value}
+      </p>
+    </div>
+  );
+}
+
 
   function spaceId({ value }) {
     return (
@@ -108,14 +110,6 @@ function Parkinglots(props) {
   }
 
   function AccessMode({ value }) {
-    return (
-      <div>
-        <p className="text-black text-base font-normal text-center">{value}</p>
-      </div>
-    );
-  }
-
-  function RentalRule({ value }) {
     return (
       <div>
         <p className="text-black text-base font-normal text-center">{value}</p>
@@ -143,7 +137,7 @@ function Parkinglots(props) {
       </div>
     );
   }
-    function view({ row, value }) {
+  function view({ row, value }) {
     return (
       <div className="flex justify-center items-center gap-2">
         <button
@@ -206,17 +200,13 @@ function Parkinglots(props) {
         accessor: "access_mode",
         Cell: AccessMode,
       },
-      {
-        Header: "Rental Rule",
-        accessor: "rental_rule",
-        Cell: RentalRule,
-      },
+
       {
         Header: "Queue",
         accessor: "enable_queue",
         Cell: Queue,
       },
-       {
+      {
         Header: "View",
         // accessor: 'date',
         Cell: view,
@@ -310,7 +300,6 @@ function Parkinglots(props) {
       {open && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4">
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
-            
             <div className="flex justify-between items-center px-6 py-4 border-b">
               <h2 className="text-lg font-semibold">Parking Detail</h2>
 
@@ -327,20 +316,62 @@ function Parkinglots(props) {
 
               <Row label="Location" value={popupData?.address} />
 
-              <Row label="Vehicle Type" value={popupData?.vehicle_type} />
-
-              <Row label="Rental Rule" value={popupData?.rental_rule} />
-
+              <Row
+                label="Vehicle Type"
+                value={popupData?.vehicle_type?.join(", ")}
+              />
               <Row label="Availability" value={popupData?.availability} />
 
-              <Row label="Access mode" value={popupData?.access_mode} />
+              <Row label="Access Mode" value={popupData?.access_mode} />
 
               <Row label="Queue" value={popupData?.enable_queue} />
+
+              {/* Pricing */}
+
+              <div className="px-6 py-2 border-t">
+                <p className="font-semibold ">Pricing</p>
+
+                <Row
+                  label="Hourly"
+                  value={`$${popupData?.pricing?.hourly_rate}`}
+                />
+
+                <Row
+                  label="Daily"
+                  value={`$${popupData?.pricing?.daily_rate}`}
+                />
+
+                <Row
+                  label="Monthly"
+                  value={`$${popupData?.pricing?.monthly_rate}`}
+                />
+              </div>
+
+              {/* Slots */}
+
+              <div className="px-6 py-3 border-t">
+                <p className="font-semibold mb-2">Slots</p>
+
+                {popupData?.slots?.map((slot, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between text-xs border-b py-1.5"
+                  >
+                    <span>{slot.slot_label}</span>
+
+                    <span>
+                      Row {slot.position?.row} | Col {slot.position?.column}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="flex justify-center py-5 border-t">
               <button
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setpopupData("")
+                  setOpen(false)}}
                 className="bg-black cursor-pointer text-white px-8 py-2 rounded-md"
               >
                 Close
